@@ -38,13 +38,13 @@ class MacFactory extends GuiFactory {
 
 class IBtn {
     render() {
-        return "";
+        throw err("Not Implemented");
     }
 }
 
 class ITitle {
     render() {
-        return "";
+        throw err("Not Implemented");
     }
 }
 

@@ -16,6 +16,16 @@ function generateRequest(builder) {
 
 describe('builder es6 test', () => {
 
+  it('Interface Builder', () => {
+      const builder = new IBuilder();
+      try {
+        const request = generateRequest(builder);
+      } catch (e) {
+        expect(e).to.equal("Not Implemented");
+      }
+
+  });
+
     it('Request Builder', () => {
         const builder = new RequestBuilder();
         const request = generateRequest(builder)
@@ -27,8 +37,8 @@ describe('builder es6 test', () => {
 
     it('Doc Builder', () => {
         const builder = new DocBuilder();
-        const request = generateRequest(builder)
-        assert.notInstanceOf(request, Request, 'Instance of Request');
-        expect(request).to.equal("<url>http://something/users</url><method>GET</method><payload>null</payload>");
+        const requestDoc = generateRequest(builder)
+        assert.notInstanceOf(requestDoc, Request, 'Instance of Request');
+        expect(requestDoc).to.equal("<url>http://something/users</url><method>GET</method><payload>null</payload>");
     });
 });

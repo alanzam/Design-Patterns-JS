@@ -11,12 +11,15 @@ class IBuilder {
     }
 
     forUrl(url) {
+      throw "Not Implemented";
     }
 
     useMethod(method) {
+      throw "Not Implemented";
     }
 
     payload(payload) {
+      throw "Not Implemented";
     }
 
 }

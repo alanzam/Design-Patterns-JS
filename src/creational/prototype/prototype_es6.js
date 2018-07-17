@@ -1,12 +1,16 @@
-class Sheep {
-    constructor(name, weight) {
-        this.name = name;
-        this.weight = weight;
+class Enemy {
+    constructor(life, armor) {
+        this.life = life;
+        this.armor = armor;
+    }
+
+    attacked(pwr) {
+      this.life -= pwr;
     }
 
     clone() {
-        return new Sheep(this.name, this.weight);
+        return new Enemy(this.life, this.armor);
     }
 }
 
-export default Sheep;
+export default Enemy;
