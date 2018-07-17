@@ -16,6 +16,7 @@
 **[Creational](#creational)**
 * [Abstract Factory](#abstract-factory)
 * [Builder](#builder)
+* [Factory Method](#factory-method)
 * [Prototype](#prototype)
 * [Singleton](#singleton)
 
@@ -904,34 +905,82 @@ export { Developer, Manager, bonusVisitor };
 ### Abstract Factory
 ##### abstract-factory_es6.js
 ```Javascript
-function droidProducer(kind) {
-   if (kind === 'battle') return battleDroidFactory;
-   return pilotDroidFactory;
+
+class GuiFactory {
+  constructor() {
+  }
+
+  typeOf() {
+    return "IGuiFactory";
+  }
+
+  renderBtn() {
+    return this.Btn.render();
+  }
+
+  renderTitle() {
+    return this.Title.render();
+  }
+
+  onClick() {
+    return "Hi";
+  }
 }
 
-function battleDroidFactory() {
-    return new B1();
+class WinFactory extends GuiFactory {
+  constructor() {
+    super();
+    this.Btn = new WinBtn();
+    this.Title = new WinTitle();
+  }
 }
 
-function pilotDroidFactory() {
-    return new Rx24();
+class MacFactory extends GuiFactory {
+  constructor() {
+    super();
+    this.Btn = new MacBtn();
+    this.Title = new MacTitle();
+  }
 }
 
-
-class B1 {
-    info() {
-        return "B1, Battle Droid";
+class IBtn {
+    render() {
+        throw err("Not Implemented");
     }
 }
 
-class Rx24 {
-    info() {
-        return "Rx24, Pilot Droid";
+class ITitle {
+    render() {
+        throw err("Not Implemented");
     }
 }
 
+class WinBtn extends IBtn {
+  render() {
+    return "<win>Button</win>"
+  }
+}
 
-export default droidProducer;
+class WinTitle extends ITitle {
+  render() {
+    return "<win>Title</win>"
+  }
+}
+
+class MacBtn extends IBtn {
+  render() {
+    return "<mac>Button</mac>"
+  }
+}
+
+class MacTitle extends ITitle {
+  render() {
+    return "<mac>Title</mac>"
+  }
+}
+
+
+export { GuiFactory, WinFactory, MacFactory };
 
 ```
 
@@ -946,8 +995,27 @@ class Request {
     }
 }
 
-class RequestBuilder {
+class IBuilder {
     constructor() {
+    }
+
+    forUrl(url) {
+      throw "Not Implemented";
+    }
+
+    useMethod(method) {
+      throw "Not Implemented";
+    }
+
+    payload(payload) {
+      throw "Not Implemented";
+    }
+
+}
+
+class RequestBuilder extends IBuilder{
+    constructor() {
+        super();
         this.request = new Request();
     }
 
@@ -972,42 +1040,125 @@ class RequestBuilder {
 
 }
 
-export default RequestBuilder;
+class DocBuilder extends IBuilder{
+    constructor() {
+        super();
+        this.urlDoc = "";
+        this.methodDoc = "";
+        this.payloadDoc = "";
+    }
+
+    forUrl(url) {
+        this.urlDoc = url;
+        return this;
+    }
+
+    useMethod(method) {
+        this.methodDoc = method;
+        return this;
+    }
+
+    payload(payload) {
+        this.payloadDoc = payload;
+        return this;
+    }
+
+    build() {
+        return `<url>${this.urlDoc}</url><method>${this.methodDoc}</method><payload>${this.payloadDoc}</payload>`;
+    }
+
+}
+
+export { RequestBuilder, DocBuilder, IBuilder, Request };
+
+```
+
+### Factory Method
+##### factory-method_es6.js
+```Javascript
+class Employee {
+  constructor(employeeId) {
+    this.employeeId = employeeId;
+  }
+}
+
+
+class EmployeeFactory {
+  constructor() {
+    this.employees = {};
+  }
+
+  findOrCreateEmployee(id) {
+    if (this.employees[id] === undefined)
+        this.employees[id] = new Employee(id);
+    return this.employees[id];
+  }
+
+  getNumberOfEmployees() {
+    return Object.keys(this.employees).length;
+  }
+
+}
+
+export { EmployeeFactory, Employee };
 
 ```
 
 ### Prototype
 ##### prototype_es6.js
 ```Javascript
-class Sheep {
-    constructor(name, weight) {
-        this.name = name;
-        this.weight = weight;
+class Enemy {
+    constructor(life, armor) {
+        this.life = life;
+        this.armor = armor;
+    }
+
+    attacked(pwr) {
+      this.life -= pwr;
     }
 
     clone() {
-        return new Sheep(this.name, this.weight);
+        return new Enemy(this.life, this.armor);
     }
 }
 
-export default Sheep;
+export default Enemy;
 
 ```
 
 ### Singleton
 ##### singleton_es6.js
 ```Javascript
-class Person {
+class DbConnection {
     constructor() {
-        if (typeof Person.instance === 'object') {
-            return Person.instance;
+        if (typeof DbConnection.instance === 'object') {
+            return DbConnection.instance;
         }
-        Person.instance = this;
+        this.Connstring = "connection1";
+        this.connected = false;
+        DbConnection.instance = this;
         return this;
     }
+
+    getStatus() {
+      return this.connected;
+    }
+
+    connect() {
+      this.connected = true;
+    }
+
+    changeConnection(connString) {
+      this.Connstring = connString;
+    }
+
+    getConnection() {
+      return this.Connstring;
+    }
+
 }
 
-export default Person;
+export default DbConnection;
 
 ```
 
@@ -1016,93 +1167,133 @@ export default Person;
 ### Adapter
 ##### adapter_es6.js
 ```Javascript
-class Soldier {
-    constructor(level) {
-        this.level = level;
-    }
+class RoundHole {
+  constructor(radius) {
+    this.radius = radius;
+  }
 
-    attack() {
-        return this.level * 1;
-    }
+  fits(object) {
+    if (!(object instanceof RoundObject))
+        throw "Not a round object";
+    return this.radius >= object.getRadius();
+  }
+
 }
 
-class Jedi {
-    constructor(level) {
-        this.level = level;
-    }
+class RoundObject {
+  constructor(radius) {
+    this.radius = radius;
+  }
 
-    attackWithSaber() {
-        return this.level * 100;
-    }
+  getRadius() {
+    return this.radius;
+  }
 }
 
-class JediAdapter {
-    constructor(jedi) {
-        this.jedi = jedi;
-    }
+class SquareObject {
+  constructor(width) {
+    this.width = width;
+  }
 
-    attack() {
-        return this.jedi.attackWithSaber();
-    }
+  getWidth() {
+    return this.width;
+  }
 }
 
-export { Soldier, Jedi, JediAdapter };
+class RoundSquareAdapter extends RoundObject{
+  constructor(square) {
+    super();
+    if (!(square instanceof SquareObject))
+        throw "Not a square object";
+    this.square = square;
+  }
+
+  getRadius() {
+    return Math.sqrt(2 * Math.pow(this.square.getWidth(), 2)) / 2;
+  }
+
+}
+
+
+export { RoundSquareAdapter, SquareObject, RoundObject, RoundHole };
 
 ```
 
 ### Decorator
 ##### decorator_es6.js
 ```Javascript
-class Pasta {
-    constructor() {
-        this.price = 0;
-    }
-    getPrice() {
-        return this.price;
-    }
+function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(find, 'g'), replace);
 }
 
-class Penne extends Pasta {
-    constructor() {
-        super();
-        this.price = 8;
-    }
+class DataSource {
+  constructor() {
+    this.data = null;
+  }
+
+  setData(data) {
+    this.data = data;
+    console.log('Setted Data', this.data);
+  }
+
+  readData() {
+    console.log('Reading Data', this.data);
+    return this.data;
+  }
+
 }
 
+class DataSourceDecorator extends DataSource {
+  constructor(dataSource) {
+    super();
+    this.dataSource = dataSource;
+  }
 
-class PastaDecorator extends Pasta {
-    constructor(pasta) {
-        super();
-        this.pasta = pasta;
-    }
+  setData(data) {
+    this.dataSource.setData(data);
+  }
 
-    getPrice() {
-        return this.pasta.getPrice();
-    }
+  readData() {
+    const data = this.dataSource.readData();
+    return data;
+  }
 }
 
+class EncryptData extends DataSourceDecorator {
+  constructor(dataSource) {
+    super(dataSource);
+  }
 
-class SauceDecorator extends PastaDecorator {
-    constructor(pasta) {
-        super(pasta);
-    }
+  setData(data) {
+    const encryptedData = `XXX===${data}===XXX`;
+    super.setData(encryptedData);
+  }
 
-    getPrice() {
-        return super.getPrice() + 5;
-    }
+  readData() {
+    let encryptedData = super.readData();
+    const decryptedData = replaceAll(replaceAll(encryptedData, 'XXX===',''),'===XXX','');
+    return decryptedData;
+  }
 }
 
-class CheeseDecorator extends PastaDecorator {
-    constructor(pasta) {
-        super(pasta);
-    }
+class CompressData extends DataSourceDecorator {
+  constructor(dataSource) {
+    super(dataSource);
+  }
 
-    getPrice() {
-        return super.getPrice() + 3;
-    }
+  setData(data) {
+    const compressData = replaceAll(data, 'XXX', 'x');
+    super.setData(compressData);
+  }
+
+  readData() {
+    let compressData = super.readData();
+    const decompressedData = replaceAll(compressData, 'x','XXX');
+    return decompressedData;
+  }
 }
 
-export { Penne, SauceDecorator, CheeseDecorator };
+export { DataSource, DataSourceDecorator, EncryptData, CompressData };
 
 ```
 
