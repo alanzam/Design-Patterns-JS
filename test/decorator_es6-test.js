@@ -1,17 +1,42 @@
 const expect = require('chai').expect;
-import { Penne, SauceDecorator, CheeseDecorator } from '../src/structural/decorator/decorator_es6';
+import { DataSource, DataSourceDecorator, EncryptData, CompressData } from '../src/structural/decorator/decorator_es6';
 
 
 describe('decorator es6 tests', () => {
 
-    it('sanity test', () => {
-        const penne = new Penne();
-        const penneWithSauce = new SauceDecorator(penne);
-        const penneWithSauceAndCheese = new CheeseDecorator(penneWithSauce);
+    it('Data decorator test', () => {
+        const dataSource = new DataSource();
+        dataSource.setData("Data");
+        expect(dataSource.readData()).to.equal("Data");
 
-        expect(penne.getPrice()).to.equal(8);
-        expect(penneWithSauce.getPrice()).to.equal(13);
-        expect(penneWithSauceAndCheese.getPrice()).to.equal(16);
+        const encryptedData = new EncryptData(dataSource);
+        encryptedData.setData("Data");
+        expect(encryptedData.dataSource.data).to.equal("XXX===Data===XXX");
+        expect(encryptedData.readData()).to.equal("Data");
+
+        const compressedData = new CompressData(dataSource);
+        compressedData.setData("XXXDataXXX");
+        expect(compressedData.dataSource.data).to.equal("xDatax");
+        expect(compressedData.readData()).to.equal("XXXDataXXX");
+
+    });
+
+    it('Data encryptCompressData test', () => {
+        const dataSource = new DataSource();
+        const compressedData = new CompressData(dataSource);
+        const encryptCompressData = new EncryptData(compressedData);
+        encryptCompressData.setData("Data");
+        expect(encryptCompressData.readData()).to.equal("Data");
+
+    });
+
+    it('Data compressEncryptData test', () => {
+        const dataSource = new DataSource();
+        const encryptedData = new EncryptData(dataSource);
+        const encryptCompressData = new CompressData(encryptedData);
+        encryptCompressData.setData("Data");
+        expect(encryptCompressData.readData()).to.equal("Data");
+
     });
 
 });

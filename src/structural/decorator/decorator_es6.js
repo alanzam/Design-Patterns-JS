@@ -1,50 +1,72 @@
-class Pasta {
-    constructor() {
-        this.price = 0;
-    }
-    getPrice() {
-        return this.price;
-    }
+function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(find, 'g'), replace);
 }
 
-class Penne extends Pasta {
-    constructor() {
-        super();
-        this.price = 8;
-    }
+class DataSource {
+  constructor() {
+    this.data = null;
+  }
+
+  setData(data) {
+    this.data = data;
+    console.log('Setted Data', this.data);
+  }
+
+  readData() {
+    console.log('Reading Data', this.data);
+    return this.data;
+  }
+
 }
 
+class DataSourceDecorator extends DataSource {
+  constructor(dataSource) {
+    super();
+    this.dataSource = dataSource;
+  }
 
-class PastaDecorator extends Pasta {
-    constructor(pasta) {
-        super();
-        this.pasta = pasta;
-    }
+  setData(data) {
+    this.dataSource.setData(data);
+  }
 
-    getPrice() {
-        return this.pasta.getPrice();
-    }
+  readData() {
+    const data = this.dataSource.readData();
+    return data;
+  }
 }
 
+class EncryptData extends DataSourceDecorator {
+  constructor(dataSource) {
+    super(dataSource);
+  }
 
-class SauceDecorator extends PastaDecorator {
-    constructor(pasta) {
-        super(pasta);
-    }
+  setData(data) {
+    const encryptedData = `XXX===${data}===XXX`;
+    super.setData(encryptedData);
+  }
 
-    getPrice() {
-        return super.getPrice() + 5;
-    }
+  readData() {
+    let encryptedData = super.readData();
+    const decryptedData = replaceAll(replaceAll(encryptedData, 'XXX===',''),'===XXX','');
+    return decryptedData;
+  }
 }
 
-class CheeseDecorator extends PastaDecorator {
-    constructor(pasta) {
-        super(pasta);
-    }
+class CompressData extends DataSourceDecorator {
+  constructor(dataSource) {
+    super(dataSource);
+  }
 
-    getPrice() {
-        return super.getPrice() + 3;
-    }
+  setData(data) {
+    const compressData = replaceAll(data, 'XXX', 'x');
+    super.setData(compressData);
+  }
+
+  readData() {
+    let compressData = super.readData();
+    const decompressedData = replaceAll(compressData, 'x','XXX');
+    return decompressedData;
+  }
 }
 
-export { Penne, SauceDecorator, CheeseDecorator };
+export { DataSource, DataSourceDecorator, EncryptData, CompressData };

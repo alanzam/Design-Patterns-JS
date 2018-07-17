@@ -1,31 +1,49 @@
-class Soldier {
-    constructor(level) {
-        this.level = level;
-    }
+class RoundHole {
+  constructor(radius) {
+    this.radius = radius;
+  }
 
-    attack() {
-        return this.level * 1;
-    }
+  fits(object) {
+    if (!(object instanceof RoundObject))
+        throw "Not a round object";
+    return this.radius >= object.getRadius();
+  }
+
 }
 
-class Jedi {
-    constructor(level) {
-        this.level = level;
-    }
+class RoundObject {
+  constructor(radius) {
+    this.radius = radius;
+  }
 
-    attackWithSaber() {
-        return this.level * 100;
-    }
+  getRadius() {
+    return this.radius;
+  }
 }
 
-class JediAdapter {
-    constructor(jedi) {
-        this.jedi = jedi;
-    }
+class SquareObject {
+  constructor(width) {
+    this.width = width;
+  }
 
-    attack() {
-        return this.jedi.attackWithSaber();
-    }
+  getWidth() {
+    return this.width;
+  }
 }
 
-export { Soldier, Jedi, JediAdapter };
+class RoundSquareAdapter extends RoundObject{
+  constructor(square) {
+    super();
+    if (!(square instanceof SquareObject))
+        throw "Not a square object";
+    this.square = square;
+  }
+
+  getRadius() {
+    return Math.sqrt(2 * Math.pow(this.square.getWidth(), 2)) / 2;
+  }
+
+}
+
+
+export { RoundSquareAdapter, SquareObject, RoundObject, RoundHole };
