@@ -1,6 +1,6 @@
 ## Design Patterns JS [![Coverage Status](https://coveralls.io/repos/github/FelipeBB/Design-Patterns-JS/badge.svg?branch=master)](https://coveralls.io/github/FelipeBB/Design-Patterns-JS?branch=master)
 
-Here you will find the 23 (GoF) design patterns implemented in JavaScript using both prototype and ES6 classes. You can use the [**docs.md**](docs.md) to quicky overview the examples.
+Here you will find the 15 (GoF) design patterns implemented in JavaScript using both prototype and ES6 classes. You can use the [**docs.md**](docs.md) to quicky overview the examples.
 
 Follows the list of patterns separed by type:
 
@@ -19,6 +19,7 @@ These concern class and object composition. They use inheritance to compose inte
 - **Adapter:** allows classes with incompatible interfaces to work together by wrapping its own interface around that of an already existing class.
 - **Decorator:** dynamically adds/overrides behaviour in an existing method of an object.
 - **Flyweight:** reduces the cost of creating and manipulating a large number of similar objects.
+- **Facade:** provides a simplified interface to a large body of code.
 - **Proxy:** provides a placeholder for another object to control access, reduce cost, and reduce complexity.
 
 ### Behavioral Patterns
@@ -42,9 +43,6 @@ To run the tests you just need to execute the following commands inside the proj
 npm install
 npm test
 ```
-
-## TODO
-Some patterns still need to be implemented using ES6 classes.
 
 ## Notes
 - All the short definitions used in this documentation were extracted from [here](https://en.wikipedia.org/wiki/Design_Patterns).
