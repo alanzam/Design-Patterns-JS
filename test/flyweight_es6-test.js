@@ -1,17 +1,25 @@
 const expect = require('chai').expect;
 
-import  { colorFactory }  from '../src/structural/flyweight/flyweight_es6';
+import  { TreeType, ShallowTree, DeepTree, ShallowforestFactory, DeepforestFactory } from '../src/structural/flyweight/flyweight_es6';
 
 describe('flyweight tests', () => {
 
-    it('sanity', () => {
-        const cf = new colorFactory();
-        cf.create('RED');
-        cf.create('RED');
-        cf.create('RED');
-        cf.create('YELLOW');
-        cf.create('YELLOW');
-        expect(Object.keys(cf.colors)).to.have.lengthOf(2);
+    it('weight test', () => {
+        const deepForest = new DeepforestFactory();
+        const shallowForest = new ShallowforestFactory();
+        const pineTree = new TreeType('pine', 'red', 'XXXXX');
+        const orangeTree = new TreeType('orange', 'green', 'YYYYY');
+        const mapleTree = new TreeType('maple', 'brown', 'HHHHH');
+        deepForest.addTrees(pineTree, 100);
+        deepForest.addTrees(orangeTree, 100);
+        deepForest.addTrees(mapleTree, 100);
+        shallowForest.addTrees(pineTree, 100);
+        shallowForest.addTrees(orangeTree, 100);
+        shallowForest.addTrees(mapleTree, 100);
+        expect(deepForest.getSize()).to.be.above(shallowForest.getSize());
+        console.log('DeepForest: ', deepForest.getSize());
+        console.log('ShallowForest: ', shallowForest.getSize());
+
     });
 
 });
