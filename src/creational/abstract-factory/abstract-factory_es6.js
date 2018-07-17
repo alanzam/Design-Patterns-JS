@@ -1,28 +1,76 @@
-function droidProducer(kind) {
-   if (kind === 'battle') return battleDroidFactory;
-   return pilotDroidFactory;
+
+class GuiFactory {
+  constructor() {
+  }
+
+  typeOf() {
+    return "IGuiFactory";
+  }
+
+  renderBtn() {
+    return this.Btn.render();
+  }
+
+  renderTitle() {
+    return this.Title.render();
+  }
+
+  onClick() {
+    return "Hi";
+  }
 }
 
-function battleDroidFactory() {
-    return new B1();
+class WinFactory extends GuiFactory {
+  constructor() {
+    super();
+    this.Btn = new WinBtn();
+    this.Title = new WinTitle();
+  }
 }
 
-function pilotDroidFactory() {
-    return new Rx24();
+class MacFactory extends GuiFactory {
+  constructor() {
+    super();
+    this.Btn = new MacBtn();
+    this.Title = new MacTitle();
+  }
 }
 
-
-class B1 {
-    info() {
-        return "B1, Battle Droid";
+class IBtn {
+    render() {
+        return "";
     }
 }
 
-class Rx24 {
-    info() {
-        return "Rx24, Pilot Droid";
+class ITitle {
+    render() {
+        return "";
     }
 }
 
+class WinBtn extends IBtn {
+  render() {
+    return "<win>Button</win>"
+  }
+}
 
-export default droidProducer;
+class WinTitle extends ITitle {
+  render() {
+    return "<win>Title</win>"
+  }
+}
+
+class MacBtn extends IBtn {
+  render() {
+    return "<mac>Button</mac>"
+  }
+}
+
+class MacTitle extends ITitle {
+  render() {
+    return "<mac>Title</mac>"
+  }
+}
+
+
+export { GuiFactory, WinFactory, MacFactory };

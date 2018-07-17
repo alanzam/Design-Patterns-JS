@@ -1,27 +1,27 @@
 const expect = require('chai').expect;
-const droidProducer = require('../src/creational/abstract-factory/abstract-factory');
-import droidProducer6 from '../src/creational/abstract-factory/abstract-factory_es6';
+const assert = require('chai').assert;
+import { GuiFactory, WinFactory, MacFactory } from '../src/creational/abstract-factory/abstract-factory_es6';
 
 describe('abstract factory test', () => {
-    it('Battle droid', () => {
-        const battleDroid = droidProducer('battle')();
-        expect(battleDroid.info()).to.equal('B1, Battle Droid');
+
+    it('GuiFactory Test', () => {
+        const guiFactory = new GuiFactory();
+        assert.instanceOf(guiFactory, GuiFactory, 'Instance of GuiFactory');
+        expect(guiFactory.onClick()).to.equal('Hi');
     });
 
-    it('pilot droid', () => {
-        const pilotDroid = droidProducer('pilot')();
-        expect(pilotDroid.info()).to.equal('Rx24, Pilot Droid');
+    it('WinFactory Test', () => {
+        const guiFactory = new WinFactory();
+        assert.instanceOf(guiFactory, GuiFactory, 'Instance of GuiFactory');
+        expect(guiFactory.renderBtn()).to.equal('<win>Button</win>');
+        expect(guiFactory.onClick()).to.equal('Hi');
     });
 
-    it('Battle droid es6', () => {
-        const battleDroid = droidProducer6('battle')();
-        expect(battleDroid.info()).to.equal('B1, Battle Droid');
+    it('MacFactory Test', () => {
+        const guiFactory = new MacFactory();
+        assert.instanceOf(guiFactory, GuiFactory, 'Instance of GuiFactory');
+        expect(guiFactory.renderBtn()).to.equal('<mac>Button</mac>');
+        expect(guiFactory.onClick()).to.equal('Hi');
     });
-
-    it('pilot droid 6', () => {
-        const pilotDroid = droidProducer6('pilot')();
-        expect(pilotDroid.info()).to.equal('Rx24, Pilot Droid');
-    });
-
 
 });

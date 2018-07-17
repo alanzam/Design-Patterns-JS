@@ -16,16 +16,12 @@
 **[Creational](#creational)**
 * [Abstract Factory](#abstract-factory)
 * [Builder](#builder)
-* [Factory](#factory)
 * [Prototype](#prototype)
 * [Singleton](#singleton)
 
 **[Structural](#structural)**
 * [Adapter](#adapter)
-* [Bridge](#bridge)
-* [Composite](#composite)
 * [Decorator](#decorator)
-* [Facade](#facade)
 * [Flyweight](#flyweight)
 * [Proxy](#proxy)
 
@@ -906,34 +902,6 @@ export { Developer, Manager, bonusVisitor };
 
 ## creational
 ### Abstract Factory
-##### abstract-factory.js
-```Javascript
-function droidProducer(kind) {
-   if (kind === 'battle') return battleDroidFactory;
-   return pilotDroidFactory;
-}
-
-function battleDroidFactory() {
-    return new B1();
-}
-
-function pilotDroidFactory() {
-    return new Rx24();
-}
-
-function B1() {}
-B1.prototype.info = function() {
-    return "B1, Battle Droid";
-};
-
-function Rx24() {}
-Rx24.prototype.info = function() {
-    return "Rx24, Pilot Droid";
-};
-
-module.exports = droidProducer;
-
-```
 ##### abstract-factory_es6.js
 ```Javascript
 function droidProducer(kind) {
@@ -968,42 +936,6 @@ export default droidProducer;
 ```
 
 ### Builder
-##### builder.js
-```Javascript
-function Request() {
-    this.url = '';
-    this.method = '';
-    this.payload = {};
-}
-
-function RequestBuilder() {
-
-    this.request = new Request();
-
-    this.forUrl = function(url) {
-        this.request.url = url;
-        return this;
-    };
-
-    this.useMethod = function(method) {
-        this.request.method = method;
-        return this;
-    };
-
-    this.payload = function(payload) {
-        this.request.payload = payload;
-        return this;
-    };
-
-    this.build = function() {
-        return this.request;
-    };
-
-}
-
-module.exports = RequestBuilder;
-
-```
 ##### builder_es6.js
 ```Javascript
 class Request {
@@ -1044,65 +976,7 @@ export default RequestBuilder;
 
 ```
 
-### Factory
-##### factory.js
-```Javascript
-function bmwFactory(type) {
-    if (type === 'X5')
-        return new Bmw(type, 108000, 300);
-    if (type === 'X6')
-        return new Bmw(type, 111000, 320);
-}
-
-function Bmw(model, price, maxSpeed) {
-    this.model = model;
-    this.price = price;
-    this.maxSpeed = maxSpeed;
-}
-
-module.exports = bmwFactory;
-
-```
-##### factory_es6.js
-```Javascript
-class BmwFactory {
-
-    create(type) {
-        if (type === 'X5')
-            return new Bmw(type, 108000, 300);
-        if (type === 'X6')
-            return new Bmw(type, 111000, 320);
-    }
-}
-
-class Bmw {
-    constructor(model, price, maxSpeed) {
-        this.model = model;
-        this.price = price;
-        this.maxSpeed = maxSpeed;
-    }
-}
-
-export default BmwFactory;
-
-```
-
 ### Prototype
-##### prototype.js
-```Javascript
-function Sheep(name, weight) {
-    this.name = name;
-    this.weight = weight;
-}
-
-Sheep.prototype.clone = function() {
-    return new Sheep(this.name, this.weight);
-};
-
-
-module.exports = Sheep;
-
-```
 ##### prototype_es6.js
 ```Javascript
 class Sheep {
@@ -1121,21 +995,6 @@ export default Sheep;
 ```
 
 ### Singleton
-##### singleton.js
-```Javascript
-function Person() {
-
-    if(typeof Person.instance === 'object')
-        return Person.instance;
-
-    Person.instance = this;
-
-    return this;
-}
-
-module.exports = Person;
-
-```
 ##### singleton_es6.js
 ```Javascript
 class Person {
@@ -1155,35 +1014,6 @@ export default Person;
 
 ## structural
 ### Adapter
-##### adapter.js
-```Javascript
-function Soldier(lvl) {
-    this.lvl = lvl;
-}
-
-Soldier.prototype.attack = function() {
-    return this.lvl * 1;
-};
-
-function Jedi(lvl) {
-    this.lvl = lvl;
-}
-
-Jedi.prototype.attackWithSaber = function() {
-    return this.lvl * 100;
-};
-
-function JediAdapter(jedi) {
-    this.jedi = jedi;
-}
-
-JediAdapter.prototype.attack = function() {
-    return this.jedi.attackWithSaber();
-};
-
-module.exports = [Soldier, Jedi, JediAdapter];
-
-```
 ##### adapter_es6.js
 ```Javascript
 class Soldier {
@@ -1220,246 +1050,7 @@ export { Soldier, Jedi, JediAdapter };
 
 ```
 
-### Bridge
-##### bridge.js
-```Javascript
-function EpsonPrinter(ink) {
-    this.ink = ink();
-}
-EpsonPrinter.prototype.print = function() {
-    return "Printer: Epson, Ink: " + this.ink;
-};
-
-function HPprinter(ink) {
-    this.ink = ink();
-}
-HPprinter.prototype.print = function() {
-    return "Printer: HP, Ink: " + this.ink;
-};
-
-function acrylicInk() {
-    return "acrylic-based";
-}
-
-function alcoholInk() {
-    return "alcohol-based";
-}
-
-module.exports = [EpsonPrinter, HPprinter, acrylicInk, alcoholInk];
-
-```
-##### bridge_es6.js
-```Javascript
-class Printer {
-    constructor(ink) {
-        this.ink = ink;
-    }
-}
-
-class EpsonPrinter extends Printer {
-    constructor(ink) {
-        super(ink);
-    }
-
-    print() {
-        return "Printer: Epson, Ink: " + this.ink.get();
-    }
-}
-
-class HPprinter extends Printer {
-    constructor(ink) {
-        super(ink);
-    }
-
-    print() {
-        return "Printer: HP, Ink: " + this.ink.get();
-    }
-}
-
-class Ink {
-    constructor(type) {
-        this.type = type;
-    }
-    get() {
-        return this.type;
-    }
-}
-
-class AcrylicInk extends Ink {
-    constructor() {
-        super("acrylic-based");
-    }
-}
-
-class AlcoholInk extends Ink {
-    constructor() {
-        super("alcohol-based");
-    }
-}
-
-export { EpsonPrinter, HPprinter, AcrylicInk, AlcoholInk };
-
-```
-
-### Composite
-##### composite.js
-```Javascript
-// composition
-function EquipmentComposition(name) {
-    this.equipments = [];
-    this.name = name;
-}
-
-EquipmentComposition.prototype.add = function(equipment) {
-    this.equipments.push(equipment);
-};
-
-EquipmentComposition.prototype.getPrice = function() {
-    return this.equipments.map(function(equipment){
-        return equipment.getPrice();
-    }).reduce(function(a, b) {
-        return  a + b;
-    });
-};
-
-function Equipment() {}
-
-Equipment.prototype.getPrice = function() {
-    return this.price;
-};
-
-// -- leafs
-function FloppyDisk() {
-    this.name = "Floppy Disk";
-    this.price = 70;
-}
-FloppyDisk.prototype = Object.create(Equipment.prototype);
-
-function HardDrive() {
-    this.name = "Hard Drive";
-    this.price = 250;
-}
-HardDrive.prototype = Object.create(Equipment.prototype);
-
-function Memory() {
-    this.name = "8gb memomry";
-    this.price = 280;
-}
-Memory.prototype = Object.create(Equipment.prototype);
-
-module.exports = [EquipmentComposition, FloppyDisk, HardDrive, Memory];
-
-```
-##### composite_es6.js
-```Javascript
-//Equipment
-class Equipment {
-
-    getPrice() {
-        return this.price || 0;
-    }
-
-    getName() {
-        return this.name;
-    }
-
-    setName(name) {
-        this.name = name;
-    }
-}
-
-// --- composite ---
-class Composite extends Equipment {
-
-    constructor() {
-        super();
-        this.equipments = [];
-    }
-
-    add(equipment) {
-        this.equipments.push(equipment);
-    }
-
-    getPrice() {
-        return this.equipments.map(equipment => {
-            return equipment.getPrice();
-        }).reduce((a, b)  => {
-            return  a + b;
-        });
-    }
-}
-
-class Cabbinet extends Composite {
-    constructor() {
-        super();
-        this.setName('cabbinet');
-    }
-}
-
-// --- leafs ---
-class FloppyDisk extends Equipment {
-    constructor() {
-        super();
-        this.setName('Floppy Disk');
-        this.price = 70;
-    }
-}
-
-class HardDrive extends Equipment {
-    constructor() {
-        super();
-        this.setName('Hard Drive');
-        this.price = 250;
-    }
-}
-
-class Memory extends Equipment {
-    constructor() {
-        super();
-        this.setName('Memory');
-        this.price = 280;
-    }
-}
-
-export { Cabbinet, FloppyDisk, HardDrive, Memory };
-
-```
-
 ### Decorator
-##### decorator.js
-```Javascript
-function Pasta() {
-    this.price = 0;
-}
-Pasta.prototype.getPrice = function() {
-    return this.price;
-};
-
-function Penne() {
-    this.price = 8;
-}
-Penne.prototype = Object.create(Pasta.prototype);
-
-
-function SauceDecorator(pasta) {
-    this.pasta = pasta;
-}
-
-SauceDecorator.prototype.getPrice = function() {
-    return this.pasta.getPrice() + 5;
-};
-
-function CheeseDecorator(pasta) {
-    this.pasta = pasta;
-}
-
-CheeseDecorator.prototype.getPrice = function() {
-    return this.pasta.getPrice() + 3;
-};
-
-module.exports = [Penne, SauceDecorator, CheeseDecorator];
-
-```
 ##### decorator_es6.js
 ```Javascript
 class Pasta {
@@ -1515,95 +1106,7 @@ export { Penne, SauceDecorator, CheeseDecorator };
 
 ```
 
-### Facade
-##### facade.js
-```Javascript
-var shopFacade = {
-    calc: function(price) {
-        price = discount(price);
-        price = fees(price);
-        price += shipping();
-        return price;
-    }
-};
-
-function discount(value) {
-   return value * 0.9;
-}
-
-function shipping() {
-   return 5;
-}
-
-function fees(value) {
-    return value * 1.05;
-}
-
-module.exports = shopFacade;
-
-```
-##### facade_es6.js
-```Javascript
-class ShopFacade {
-    constructor() {
-        this.discount = new Discount();
-        this.shipping = new Shipping();
-        this.fees = new Fees();
-    }
-
-    calc(price) {
-        price = this.discount.calc(price);
-        price = this.fees.calc(price);
-        price += this.shipping.calc();
-        return price;
-    }
-}
-
-class Discount {
-
-    calc(value) {
-        return value * 0.9;
-    }
-}
-
-class Shipping {
-    calc() {
-        return 5;
-    }
-}
-
-class Fees {
-
-    calc(value) {
-        return value * 1.05;
-    }
-}
-
-export default ShopFacade;
-
-```
-
 ### Flyweight
-##### flyweight.js
-```Javascript
-function Color(name) {
-    this.name = name;
-}
-
-var colorFactory = {
-    colors: {},
-    create: function(name) {
-        var color = this.colors[name];
-        if(color) return color;
-
-        this.colors[name] = new Color(name);
-        return this.colors[name];
-    }
-};
-
-module.exports = colorFactory;
-
-```
 ##### flyweight_es6.js
 ```Javascript
 class Color {
@@ -1629,31 +1132,6 @@ export { colorFactory };
 ```
 
 ### Proxy
-##### proxy.js
-```Javascript
-function Car() {
-    this.drive = function() {
-        return "driving";
-    };
-}
-
-function CarProxy(driver) {
-    this.driver = driver;
-    this.drive = function() {
-        if ( driver.age < 18)
-            return "too young to drive";
-        return new Car().drive();
-    };
-}
-
-function Driver(age) {
-    this.age = age;
-}
-
-module.exports = [Car, CarProxy, Driver];
-
-
-```
 ##### proxy_es6.js
 ```Javascript
 class Car {

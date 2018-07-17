@@ -6,8 +6,24 @@ class Request {
     }
 }
 
-class RequestBuilder {
+class IBuilder {
     constructor() {
+    }
+
+    forUrl(url) {
+    }
+
+    useMethod(method) {
+    }
+
+    payload(payload) {
+    }
+
+}
+
+class RequestBuilder extends IBuilder{
+    constructor() {
+        super();
         this.request = new Request();
     }
 
@@ -32,4 +48,33 @@ class RequestBuilder {
 
 }
 
-export default RequestBuilder;
+class DocBuilder extends IBuilder{
+    constructor() {
+        super();
+        this.urlDoc = "";
+        this.methodDoc = "";
+        this.payloadDoc = "";
+    }
+
+    forUrl(url) {
+        this.urlDoc = url;
+        return this;
+    }
+
+    useMethod(method) {
+        this.methodDoc = method;
+        return this;
+    }
+
+    payload(payload) {
+        this.payloadDoc = payload;
+        return this;
+    }
+
+    build() {
+        return `<url>${this.urlDoc}</url><method>${this.methodDoc}</method><payload>${this.payloadDoc}</payload>`;
+    }
+
+}
+
+export { RequestBuilder, DocBuilder, IBuilder, Request };
