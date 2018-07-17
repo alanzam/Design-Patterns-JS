@@ -11,13 +11,11 @@ class EmployeeFactory {
   }
 
   findOrCreateEmployee(id) {
-    if (this.employees[id] === undefined)
-        this.employees[id] = new Employee(id);
-    return this.employees[id];
+    throw "Not Implemented";
   }
 
   getNumberOfEmployees() {
-    return Object.keys(this.employees).length;
+      return Object.keys(this.employees).length;
   }
 
 }

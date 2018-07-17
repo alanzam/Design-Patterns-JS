@@ -7,12 +7,10 @@ class TreeType {
 }
 
 class ShallowTree {
-    constructor(type, height){
-      this.type = type;
-      this.height = height;
+    constructor(treeType, height){
     }
-    render(treeType) {
-      console.log(`${this.height} - ${treeType.color} - ${treeType.texture}`);
+    render() {
+      throw "Not Implemented";
     }
     getSize() {
       return roughSizeOfObject(this);
@@ -34,18 +32,12 @@ class DeepTree {
 
 class ShallowforestFactory {
     constructor(){
-        this.treeTypes = {};
-        this.trees = [];
     }
     addTrees(treeType, count) {
-        if (this.treeTypes[treeType.type] === undefined)
-          this.treeTypes[treeType.type] = treeType;
-        for (let i = 0; i <= count; i++)
-          this.trees.push(new ShallowTree(treeType.type, i * 10));
+      throw "Not Implemented";
     }
     renderForest() {
-      for (let i = 0; i < this.trees.length; i++)
-        this.trees[i].render(this.treeTypes[this.trees[i].type]);
+      throw "Not Implemented";
     }
     getSize() {
       let size = 0;
@@ -108,6 +100,5 @@ function roughSizeOfObject( object ) {
     }
     return bytes;
 }
-
 
 export { TreeType, ShallowTree, DeepTree, ShallowforestFactory, DeepforestFactory };

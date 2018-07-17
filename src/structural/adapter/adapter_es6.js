@@ -31,19 +31,4 @@ class SquareObject {
   }
 }
 
-class RoundSquareAdapter extends RoundObject{
-  constructor(square) {
-    super();
-    if (!(square instanceof SquareObject))
-        throw "Not a square object";
-    this.square = square;
-  }
-
-  getRadius() {
-    return Math.sqrt(2 * Math.pow(this.square.getWidth(), 2)) / 2;
-  }
-
-}
-
-
 export { RoundSquareAdapter, SquareObject, RoundObject, RoundHole };

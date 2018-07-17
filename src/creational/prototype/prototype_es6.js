@@ -9,7 +9,7 @@ class Enemy {
     }
 
     clone() {
-        return new Enemy(this.life, this.armor);
+        throw "Not Implemented";
     }
 }
 

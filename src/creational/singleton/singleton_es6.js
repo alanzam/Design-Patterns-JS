@@ -1,12 +1,7 @@
 class DbConnection {
     constructor() {
-        if (typeof DbConnection.instance === 'object') {
-            return DbConnection.instance;
-        }
         this.Connstring = "connection1";
         this.connected = false;
-        DbConnection.instance = this;
-        return this;
     }
 
     getStatus() {
