@@ -9,11 +9,10 @@ class DataSource {
 
   setData(data) {
     this.data = data;
-    console.log('Setted Data', this.data);
   }
 
   readData() {
-    console.log('Reading Data', this.data);
+    console.log('Raw Data', this.data);
     return this.data;
   }
 

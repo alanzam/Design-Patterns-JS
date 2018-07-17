@@ -23,6 +23,7 @@
 **[Structural](#structural)**
 * [Adapter](#adapter)
 * [Decorator](#decorator)
+* [Facade](#facade)
 * [Flyweight](#flyweight)
 * [Proxy](#proxy)
 
@@ -1233,11 +1234,10 @@ class DataSource {
 
   setData(data) {
     this.data = data;
-    console.log('Setted Data', this.data);
   }
 
   readData() {
-    console.log('Reading Data', this.data);
+    console.log('Raw Data', this.data);
     return this.data;
   }
 
@@ -1297,28 +1297,243 @@ export { DataSource, DataSourceDecorator, EncryptData, CompressData };
 
 ```
 
+### Facade
+##### facade_es6.js
+```Javascript
+class MemoryRepo {
+  constructor() {
+    this.internalData = new InMemory();
+  }
+
+  getObject(id) {
+    const obj = this.internalData.getObject(id);
+    if (obj === undefined)
+      return null;
+    return obj;
+  }
+
+  addOrUpdateObject(object) {
+    this.internalData.addOrUpdateObj(object);
+  }
+
+}
+
+class MemoryDbRepo {
+  constructor() {
+    this.dbData = new DbMemory();
+  }
+
+  getObject(id) {
+    try {
+      return this.dbData.queryById(id);
+    }
+    catch (e) {
+      if (e == "Not Connected")
+         this.dbData.connect();
+      try {
+        return this.dbData.queryById(id);
+      }
+      catch (e) {
+        return null;
+      }
+    }
+  }
+
+  addOrUpdateObject(object) {
+    try {
+      this.dbData.insertToDb(object);
+    }
+    catch (e) {
+      if (e == "Not Connected")
+         this.dbData.connect();
+      try {
+        this.dbData.insertToDb(object);
+      }
+      catch (e) {
+        this.dbData.updateObject(object);
+      }
+    }
+  }
+}
+
+class InMemory {
+  constructor() {
+    this.data = {};
+  }
+
+  addOrUpdateObj(object) {
+    this.data[object.id] = object;
+  }
+
+  getObject(id) {
+    return this.data[id];
+  }
+
+}
+
+class DbMemory {
+  constructor() {
+    this.connected = false;
+    this.db = {};
+  }
+
+  connect() {
+    this.connected = true;
+  }
+
+  queryById(id) {
+    if (!this.connected)
+      throw "Not Connected";
+    if (this.db[id] === undefined)
+      throw "Not found";
+    return this.db[id];
+  }
+
+  insertToDb(object) {
+    if (!this.connected)
+      throw "Not Connected";
+    if (this.db[object.id] !== undefined)
+      throw "Duplicate";
+    this.db[object.id] = object;
+  }
+
+  updateObject(object) {
+    if (!this.connected)
+      throw "Not Connected";
+    if (this.db[object.id] === undefined)
+      throw "Not found";
+    this.db[object.id] = object;
+  }
+
+}
+
+class DataObject {
+  constructor(id, name) {
+    this.id = id;
+    this.name = name;
+  }
+}
+
+export { MemoryRepo, MemoryDbRepo, DbMemory, InMemory, DataObject };
+
+```
+
 ### Flyweight
 ##### flyweight_es6.js
 ```Javascript
-class Color {
-    constructor(name){
-        this.name = name
+class TreeType {
+    constructor(type, color, texture){
+      this.type = type;
+      this.color = color;
+      this.texture = texture;
     }
 }
 
-class colorFactory {
-    constructor(name){
-        this.colors = {};
+class ShallowTree {
+    constructor(type, height){
+      this.type = type;
+      this.height = height;
     }
-    create(name) {
-        let color = this.colors[name];
-        if(color) return color;
-        this.colors[name] = new Color(name);
-        return this.colors[name];
+    render(treeType) {
+      console.log(`${this.height} - ${treeType.color} - ${treeType.texture}`);
+    }
+    getSize() {
+      return roughSizeOfObject(this);
+    }
+}
+
+class DeepTree {
+    constructor(treeType, height){
+      this.treeType = treeType;
+      this.height = height;
+    }
+    render() {
+      console.log(`${this.height} - ${this.treeType.color} - ${this.treeType.texture}`);
+    }
+    getSize() {
+      return roughSizeOfObject(this);
+    }
+}
+
+class ShallowforestFactory {
+    constructor(){
+        this.treeTypes = {};
+        this.trees = [];
+    }
+    addTrees(treeType, count) {
+        if (this.treeTypes[treeType.type] === undefined)
+          this.treeTypes[treeType.type] = treeType;
+        for (let i = 0; i <= count; i++)
+          this.trees.push(new ShallowTree(treeType.type, i * 10));
+    }
+    renderForest() {
+      for (let i = 0; i < this.trees.length; i++)
+        this.trees[i].render(this.treeTypes[this.trees[i].type]);
+    }
+    getSize() {
+      let size = 0;
+      for (let i = 0; i < this.trees.length; i++)
+        size += this.trees[i].getSize();
+      return size;
     }
 };
 
-export { colorFactory };
+class DeepforestFactory {
+    constructor(){
+      this.trees = [];
+    }
+    addTrees(treeType, count) {
+      for (let i = 0; i <= count; i++)
+        this.trees.push(new DeepTree(treeType, i * 10));
+    }
+    renderForest() {
+      for (let i = 0; i < this.trees.length; i++)
+        this.trees[i].render();
+    }
+    getSize() {
+      let size = 0;
+      for (let i = 0; i < this.trees.length; i++)
+        size += this.trees[i].getSize();
+      return size;
+    }
+};
+
+function roughSizeOfObject( object ) {
+
+    var objectList = [];
+    var stack = [ object ];
+    var bytes = 0;
+
+    while ( stack.length ) {
+        var value = stack.pop();
+
+        if ( typeof value === 'boolean' ) {
+            bytes += 4;
+        }
+        else if ( typeof value === 'string' ) {
+            bytes += value.length * 2;
+        }
+        else if ( typeof value === 'number' ) {
+            bytes += 8;
+        }
+        else if
+        (
+            typeof value === 'object'
+            && objectList.indexOf( value ) === -1
+        )
+        {
+            objectList.push( value );
+
+            for( var i in value ) {
+                stack.push( value[ i ] );
+            }
+        }
+    }
+    return bytes;
+}
+
+
+export { TreeType, ShallowTree, DeepTree, ShallowforestFactory, DeepforestFactory };
 
 ```
 
@@ -1336,7 +1551,7 @@ class CarProxy {
         this.driver = driver;
     }
     drive() {
-        return  ( this.driver.age < 18) ? "too young to drive" : new Car().drive();
+        return (this.driver.age < 18) ? "too young to drive" : new Car().drive();
     };
 }
 
@@ -1347,7 +1562,6 @@ class Driver {
 }
 
 export { Car, CarProxy, Driver };
-
 
 ```
 

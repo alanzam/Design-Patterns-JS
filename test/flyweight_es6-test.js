@@ -17,9 +17,7 @@ describe('flyweight tests', () => {
         shallowForest.addTrees(orangeTree, 100);
         shallowForest.addTrees(mapleTree, 100);
         expect(deepForest.getSize()).to.be.above(shallowForest.getSize());
-        console.log('DeepForest: ', deepForest.getSize());
-        console.log('ShallowForest: ', shallowForest.getSize());
-
+        console.log('DeepForest: ', deepForest.getSize(), ' > ', 'ShallowForest: ', shallowForest.getSize());
     });
 
 });
