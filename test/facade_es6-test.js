@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-/*
+
 import { MemoryRepo, MemoryDbRepo, DbMemory, InMemory, DataObject }  from '../src/structural/facade/facade_es6';
 
 describe('facade es6 tests', () => {
@@ -35,4 +35,3 @@ describe('facade es6 tests', () => {
     });
 
 });
-*/

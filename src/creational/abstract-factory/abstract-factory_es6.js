@@ -3,10 +3,6 @@ class GuiFactory {
   constructor() {
   }
 
-  typeOf() {
-    return "IGuiFactory";
-  }
-
   renderBtn() {
     return this.Btn.render();
   }
@@ -32,6 +28,30 @@ class ITitle {
     }
 }
 
+class WinBtn extends IBtn {
+  render() {
+    return "<win>Button</win>"
+  }
+}
 
+class MacBtn extends IBtn {
+  render() {
+    return "<mac>Button</mac>"
+  }
+}
+
+class WinFactory extends GuiFactory {
+  constructor() {
+    super();
+    this.Btn = new WinBtn();
+  }
+}
+
+class MacFactory extends GuiFactory {
+  constructor() {
+    super();
+    this.Btn = new MacBtn();
+  }
+}
 
 export { GuiFactory, WinFactory, MacFactory };

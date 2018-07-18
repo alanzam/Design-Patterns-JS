@@ -6,9 +6,12 @@ class Car {
 
 class CarProxy {
     constructor(driver) {
+      this.driver = driver;
     }
     drive() {
-        throw "Not Implemented";
+        if (this.driver.age >= 16)
+          return new Car().drive();
+        return "too young to drive";
     };
 }
 

@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-/*
+
 import { CarProxy, Driver }  from '../src/structural/proxy/proxy_es6';
 
 describe('proxy es6 tests', () => {
@@ -16,4 +16,3 @@ describe('proxy es6 tests', () => {
     });
 
 });
-*/

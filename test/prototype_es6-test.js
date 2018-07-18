@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-/*
+
 import Enemy from '../src/creational/prototype/prototype_es6';
 
 describe('prototype_es6 test', () => {
@@ -18,4 +18,3 @@ describe('prototype_es6 test', () => {
         expect(enemy2.life).to.equal(100);
     });
 });
-*/

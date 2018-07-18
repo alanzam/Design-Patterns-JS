@@ -31,4 +31,15 @@ class SquareObject {
   }
 }
 
+class RoundSquareAdapter extends RoundObject {
+    constructor(square) {
+      super();
+      this.square = square;
+    }
+
+    getRadius() {
+      return Math.sqrt(2 * Math.pow(this.square.getWidth(), 2)) / 2;
+    }
+}
+
 export { RoundSquareAdapter, SquareObject, RoundObject, RoundHole };

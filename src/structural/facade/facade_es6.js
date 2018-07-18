@@ -1,15 +1,57 @@
 class MemoryRepo {
   constructor() {
+    this.internalData = new InMemory();
   }
 
   getObject(id) {
-    throw "Not Implemented";
+    const obj = this.internalData.getObject(id);
+    if (obj === undefined)
+      return null;
+    return obj;
   }
 
   addOrUpdateObject(object) {
-    throw "Not Implemented";
+    this.internalData.addOrUpdateObj(object);
   }
 
+}
+
+class MemoryDbRepo {
+  constructor() {
+    this.dbData = new DbMemory();
+  }
+
+  getObject(id) {
+    try {
+      return this.dbData.queryById(id);
+    }
+    catch (e) {
+      if (e == "Not Connected")
+         this.dbData.connect();
+      try {
+        return this.dbData.queryById(id);
+      }
+      catch (e) {
+        return null;
+      }
+    }
+  }
+
+  addOrUpdateObject(object) {
+    try {
+      this.dbData.insertToDb(object);
+    }
+    catch (e) {
+      if (e == "Not Connected")
+         this.dbData.connect();
+      try {
+        this.dbData.insertToDb(object);
+      }
+      catch (e) {
+        this.dbData.updateObject(object);
+      }
+    }
+  }
 }
 
 class InMemory {
@@ -70,4 +112,4 @@ class DataObject {
   }
 }
 
-export { MemoryRepo, DataObject };
+export { MemoryRepo, MemoryDbRepo, DbMemory, InMemory, DataObject };

@@ -21,14 +21,15 @@ class DataSource {
 class DataSourceDecorator extends DataSource {
   constructor(dataSource) {
     super();
+    this.dataSource = dataSource;
   }
 
   setData(data) {
-    throw "Not Implemented";
+    this.dataSource.setData(data);
   }
 
   readData() {
-    throw "Not Implemented";
+    return this.dataSource.readData();
   }
 }
 
@@ -38,11 +39,13 @@ class EncryptData extends DataSourceDecorator {
   }
 
   setData(data) {
-    throw "Not Implemented";
+    const encryptedData = "XXX===" + data + "===XXX";
+    super.setData(encryptedData);
   }
 
   readData() {
-    throw "Not Implemented";
+    let encryptedData = super.readData();
+    return replaceAll(replaceAll(encryptedData, "XXX===" , ""), "===XXX", "");
   }
 }
 
@@ -52,11 +55,13 @@ class CompressData extends DataSourceDecorator {
   }
 
   setData(data) {
-    throw "Not Implemented";
+    const compressdata = replaceAll(data, "XXX" , "x");
+    super.setData(compressdata);
   }
 
   readData() {
-    throw "Not Implemented";
+    let compressdata = super.readData();
+    return replaceAll(compressdata, "x" , "XXX")
   }
 }
 

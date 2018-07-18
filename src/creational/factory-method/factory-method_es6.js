@@ -4,14 +4,27 @@ class Employee {
   }
 }
 
-
-class EmployeeFactory {
+class IFactory {
   constructor() {
+  }
+
+  findOrCreate(id) {
+    throw "Not implemented"
+  }
+
+}
+
+
+class EmployeeFactory extends IFactory{
+  constructor() {
+    super();
     this.employees = {};
   }
 
-  findOrCreateEmployee(id) {
-    throw "Not Implemented";
+  findOrCreate(id) {
+    if (this.employees[id] === undefined)
+      this.employees[id] = new Employee(id);
+    return this.employees[id];
   }
 
   getNumberOfEmployees() {

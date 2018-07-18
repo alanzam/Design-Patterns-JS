@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-/*
+
 import { DataSource, DataSourceDecorator, EncryptData, CompressData } from '../src/structural/decorator/decorator_es6';
 
 
@@ -41,4 +41,3 @@ describe('decorator es6 tests', () => {
     });
 
 });
-*/

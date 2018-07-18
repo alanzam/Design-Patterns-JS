@@ -4,13 +4,19 @@ class TreeType {
       this.color = color;
       this.texture = texture;
     }
+
+    getSize() {
+      return roughSizeOfObject(this);
+    }
 }
 
 class ShallowTree {
     constructor(treeType, height){
+      this.treeType = treeType.type;
+      this.height = height;
     }
-    render() {
-      throw "Not Implemented";
+    render(treeType) {
+      return `${this.height} - ${treeType.color} - ${treeType.texture}`;
     }
     getSize() {
       return roughSizeOfObject(this);
@@ -23,7 +29,7 @@ class DeepTree {
       this.height = height;
     }
     render() {
-      console.log(`${this.height} - ${this.treeType.color} - ${this.treeType.texture}`);
+      return `${this.height} - ${this.treeType.color} - ${this.treeType.texture}`;
     }
     getSize() {
       return roughSizeOfObject(this);
@@ -32,17 +38,27 @@ class DeepTree {
 
 class ShallowforestFactory {
     constructor(){
+      this.treeTypes = {};
+      this.trees = [];
     }
     addTrees(treeType, count) {
-      throw "Not Implemented";
+      if (this.treeTypes[treeType.type] === undefined)
+        this.treeTypes[treeType.type] = treeType;
+      for (let i = 0; i <= count; i++)
+        this.trees.push(new ShallowTree(treeType, i * 10));
     }
     renderForest() {
-      throw "Not Implemented";
+      let str = "";
+      for (let i = 0; i < this.trees.length; i++)
+        str += this.trees[i].render(this.treeTypes[this.trees[i].treeType]) + '\n';
+      return str;
     }
     getSize() {
       let size = 0;
       for (let i = 0; i < this.trees.length; i++)
         size += this.trees[i].getSize();
+      for (let i = 0; i < Object.keys(this.treeTypes).length; i++)
+        size += this.treeTypes[Object.keys(this.treeTypes)[i]].getSize();
       return size;
     }
 };
@@ -56,8 +72,10 @@ class DeepforestFactory {
         this.trees.push(new DeepTree(treeType, i * 10));
     }
     renderForest() {
+      let str = "";
       for (let i = 0; i < this.trees.length; i++)
-        this.trees[i].render();
+        str += this.trees[i].render() + '\n';
+      return str;
     }
     getSize() {
       let size = 0;
