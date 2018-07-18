@@ -1,5 +1,6 @@
 const expect = require('chai').expect;
 const assert = require('chai').assert;
+/*
 import { GuiFactory, WinFactory, MacFactory } from '../src/creational/abstract-factory/abstract-factory_es6';
 
 describe('abstract factory test', () => {
@@ -25,3 +26,4 @@ describe('abstract factory test', () => {
     });
 
 });
+*/

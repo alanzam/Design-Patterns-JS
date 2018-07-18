@@ -1,5 +1,6 @@
 const expect = require('chai').expect;
 const assert = require('chai').assert;
+/*
 import { EmployeeFactory, Employee } from '../src/creational/factory-method/factory-method_es6';
 
 describe('factory method test', () => {
@@ -21,3 +22,4 @@ describe('factory method test', () => {
 
 
 });
+*/

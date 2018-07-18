@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-
+/*
 import  { TreeType, ShallowTree, DeepTree, ShallowforestFactory, DeepforestFactory } from '../src/structural/flyweight/flyweight_es6';
 
 describe('flyweight tests', () => {
@@ -21,3 +21,4 @@ describe('flyweight tests', () => {
     });
 
 });
+*/

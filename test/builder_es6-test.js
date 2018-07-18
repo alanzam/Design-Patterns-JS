@@ -1,5 +1,6 @@
 const expect = require('chai').expect;
 const assert = require('chai').assert;
+/*
 import { RequestBuilder, DocBuilder, IBuilder, Request } from '../src/creational/builder/builder_es6';
 
 function generateRequest(builder) {
@@ -42,3 +43,4 @@ describe('builder es6 test', () => {
         expect(requestDoc).to.equal("<url>http://something/users</url><method>GET</method><payload>null</payload>");
     });
 });
+*/

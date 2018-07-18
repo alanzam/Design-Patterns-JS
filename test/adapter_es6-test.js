@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-
+/*
 import { RoundSquareAdapter, SquareObject, RoundObject, RoundHole } from '../src/structural/adapter/adapter_es6';
 
 describe('adapter_es6 tests', () => {
@@ -36,3 +36,4 @@ describe('adapter_es6 tests', () => {
     });
 
 });
+*/
