@@ -1,6 +1,6 @@
 ## Design Patterns JS [![Coverage Status](https://coveralls.io/repos/github/FelipeBB/Design-Patterns-JS/badge.svg?branch=master)](https://coveralls.io/github/FelipeBB/Design-Patterns-JS?branch=master)
 
-Here you will find the 15 (GoF) design patterns implemented in JavaScript using both prototype and ES6 classes. You can use the [**docs.md**](docs.md) to quicky overview the examples.
+Here you will find the 20 (GoF) design patterns implemented in JavaScript using both prototype and ES6 classes. You can use the [**docs.md**](docs.md) to quicky overview the examples.
 
 Follows the list of patterns separed by type:
 
@@ -27,7 +27,6 @@ Most of these design patterns are specifically concerned with communication betw
 
 - **Chain of responsibility:** delegates commands to a chain of processing objects.
 - **Command:** creates objects which encapsulate actions and parameters.
-- **Interpreter:** implements a specialized language.
 - **Iterator:** accesses the elements of an object sequentially without exposing its underlying representation.
 - **Mediator:** allows loose coupling between classes by being the only class that has detailed knowledge of their methods.
 - **Memento:** provides the ability to restore an object to its previous state (undo).

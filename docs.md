@@ -3,7 +3,6 @@
 **[Behavioral](#behavioral)**
 * [Chain Of Resp](#chain-of-resp)
 * [Command](#command)
-* [Interpreter](#interpreter)
 * [Iterator](#iterator)
 * [Mediator](#mediator)
 * [Memento](#memento)
@@ -101,327 +100,153 @@ class NoneDiscount {
 export { ShoppingCart , Discount };
 
 ```
-##### chain-of-resp.js
-```Javascript
-function ShoppingCart() {
-    this.products = [];
-
-    this.addProduct = function(p) {
-        this.products.push(p);
-    };
-}
-
-function Discount() {
-    this.calc = function(products) {
-        var ndiscount = new NumberDiscount();
-        var pdiscount = new PriceDiscount();
-        var none = new NoneDiscount();
-
-        ndiscount.setNext(pdiscount);
-        pdiscount.setNext(none);
-
-        return ndiscount.exec(products);
-    };
-}
-
-function NumberDiscount() {
-    this.next = null;
-    this.setNext = function(fn) {
-        this.next = fn;
-    };
-
-    this.exec = function(products) {
-        var result = 0;
-        if (products.length > 3)
-            result = 0.05;
-
-        return result + this.next.exec(products);
-    };
-}
-
-function PriceDiscount() {
-    this.next = null;
-    this.setNext = function(fn) {
-        this.next = fn;
-    };
-    this.exec = function(products) {
-        var result = 0;
-        var total = products.reduce(function(a, b) {
-            return a + b;
-        });
-
-        if (total >= 500)
-            result = 0.1;
-
-        return result + this.next.exec(products);
-    };
-}
-
-function NoneDiscount() {
-    this.exec = function() {
-        return 0;
-    };
-}
-
-module.exports = [ShoppingCart, Discount];
-
-```
 
 ### Command
-##### command.js
-```Javascript
-function Cockpit(command) {
-    this.command = command;
-}
-Cockpit.prototype.execute = function() {
-    this.command.execute();
-};
-
-function Turbine() {
-  this.speed = 0;
-  this.state = false;
-}
-
-Turbine.prototype.on = function() {
-    this.state = true;
-    this.speed = 100;
-};
-
-Turbine.prototype.off = function() {
-    this.speed = 0;
-    this.state = false;
-};
-
-Turbine.prototype.speedDown = function() {
-    if (!this.state) return;
-
-    this.speed -= 100;
-};
-
-Turbine.prototype.speedUp = function() {
-    if (!this.state) return;
-
-    this.speed += 100;
-};
-
-
-function OnCommand(turbine) {
-    this.turbine = turbine;
-}
-OnCommand.prototype.execute = function() {
-    this.turbine.on();
-};
-
-function OffCommand(turbine) {
-    this.turbine = turbine;
-}
-OffCommand.prototype.execute = function() {
-    this.turbine.off();
-};
-
-function SpeedUpCommand(turbine) {
-    this.turbine = turbine;
-}
-SpeedUpCommand.prototype.execute = function() {
-    this.turbine.speedUp();
-};
-
-function SpeedDownCommand(turbine) {
-    this.turbine = turbine;
-}
-SpeedDownCommand.prototype.execute = function() {
-    this.turbine.speedDown();
-};
-
-
-module.exports = [Cockpit, Turbine, OnCommand, OffCommand, SpeedUpCommand, SpeedDownCommand];
-
-```
 ##### command_es6.js
 ```Javascript
-class Cockpit {
-    constructor(command) {
-        this.command = command;
-    }
-    execute() {
-        this.command.execute();
-    }
+class Player {
+  constructor() {
+    this.beats = [];
+  }
+
+  playSong() {
+    let song = "";
+    this.beats.forEach(function(beat) {
+        song += beat.loop();
+    });
+    return song;
+  }
+
+  getDuration() {
+    let duration = 0;
+    this.beats.forEach(function(beat) {
+        duration += beat.getTime();
+    });
+    return duration;
+  }
+
+  addCube(cube) {
+    this.beats.push(cube);
+  }
+
 }
 
-class Turbine {
-    constructor() {
-        this.state = false;
-    }
-    on() {
-        this.state = true;
-    }
-    off() {
-        this.state = false;
-    }
+class BeatCube {
+  constructor(beat, time) {
+    this.beat = beat;
+    this.time = time !== undefined ? time : 1;
+  }
+
+  demoPlay() {
+    return this.beat.play();
+  }
+
+  loop() {
+    let loop = "";
+    for (let i = 0; i < this.time; i++)
+      loop += this.beat.play();
+    return loop;
+  }
+
+  getTime() {
+    return this.time;
+  }
 }
 
-class OnCommand {
-    constructor(turbine) {
-        this.turbine = turbine;
-    }
-    execute() {
-        this.turbine.on();
-    }
+class HipHopBeat {
+  play() {
+    return "O------X--O----X";
+  }
 }
 
-class OffCommand {
-    constructor(turbine) {
-        this.turbine = turbine;
-    }
-    execute() {
-        this.turbine.off();
-    }
+class RockBeat {
+  play() {
+    return "O-X-O-X-O-X-O-X-";
+  }
 }
 
-export { Cockpit, Turbine, OnCommand, OffCommand };
-
-
-```
-
-### Interpreter
-##### interpreter.js
-```Javascript
-function Sum(left, right) {
-    this.left = left;
-    this.right = right;
+class DiscoBeat {
+  play() {
+    return "O - X - O - X - ";
+  }
 }
 
-Sum.prototype.interpret = function() {
-   return this.left.interpret() + this.right.interpret();
-};
-
-function Min(left, right) {
-    this.left = left;
-    this.right = right;
-}
-
-Min.prototype.interpret = function() {
-   return this.left.interpret() - this.right.interpret();
-};
-
-function Num(val) {
-    this.val = val;
-}
-
-Num.prototype.interpret = function() {
-    return this.val;
-};
-
-module.exports = [Num, Min, Sum];
-
-```
-##### interpreter_es6.js
-```Javascript
-class Sum {
-    constructor(left, right) {
-        this.left = left;
-        this.right = right;
-    }
-
-    interpret() {
-        return this.left.interpret() + this.right.interpret();
-    }
-}
-
-class Min {
-    constructor(left, right) {
-        this.left = left;
-        this.right = right;
-    }
-
-    interpret() {
-        return this.left.interpret() - this.right.interpret();
-    }
+class ReggaeBeat {
+  play() {
+    return "O - - - X - - - O";
+  }
 }
 
 
-class Num {
-    constructor(val) {
-        this.val = val;
-    }
-
-    interpret() {
-        return this.val;
-    }
-}
-
-
-export { Num, Min, Sum };
+export { Player, BeatCube, HipHopBeat, DiscoBeat, RockBeat, ReggaeBeat };
 
 ```
 
 ### Iterator
-##### iterator.js
-```Javascript
-function Iterator(el) {
-    this.index = 0;
-    this.elements = el;
-}
-
-Iterator.prototype = {
-    next: function() {
-        return this.elements[this.index++];
-    },
-    hasNext: function() {
-        return this.index < this.elements.length;
-    }
-};
-
-module.exports = Iterator;
-
-```
 ##### iterator_es6.js
 ```Javascript
-class Iterator {
-    constructor(el) {
+class FacebookContact {
+  constructor(isFriend) {
+    this.isFriend = isFriend ? true : false;
+  }
+}
+
+class FacebookFriend extends FacebookContact {
+  constructor() {
+    super(true);
+  }
+}
+
+class Facebook {
+  constructor() {
+    this.contacts = [];
+  }
+
+  addContact(contact) {
+    this.contacts.push(contact);
+  }
+}
+
+class FriendSearch {
+    constructor(contacts) {
         this.index = 0;
-        this.elements = el;
+        this.contacts = contacts;
     }
 
     next() {
-        return this.elements[this.index++];
+        while (this.hasNext()) {
+          const nextContact = this.contacts[this.index++];
+          if (nextContact.isFriend)
+            return nextContact;
+        }
+        return undefined;
     }
 
     hasNext() {
-        return this.index < this.elements.length;
+        return this.index < this.contacts.length;
     }
 }
 
-export default Iterator;
+class ContactSearch {
+    constructor(contacts) {
+        this.index = 0;
+        this.contacts = contacts;
+    }
+
+    next() {
+        return this.contacts[this.index++];
+    }
+
+    hasNext() {
+        return this.index < this.contacts.length;
+    }
+}
+
+export {FacebookFriend, FacebookContact, Facebook, FriendSearch, ContactSearch};
 
 ```
 
 ### Mediator
-##### mediator.js
-```Javascript
-function TrafficTower() {
-    this.airplanes = [];
-}
-
-TrafficTower.prototype.requestPositions = function() {
-    return this.airplanes.map(function(airplane) {
-        return airplane.position;
-    });
-};
-
-function Airplane(position, trafficTower) {
-    this.position = position;
-    this.trafficTower = trafficTower;
-    this.trafficTower.airplanes.push(this);
-}
-
-Airplane.prototype.requestPositions = function() {
-    return this.trafficTower.requestPositions();
-};
-
-module.exports = [TrafficTower, Airplane];
-
-```
 ##### mediator_es6.js
 ```Javascript
 class TrafficTower {
@@ -454,450 +279,496 @@ export { TrafficTower, Airplane };
 ```
 
 ### Memento
-##### memento.js
-```Javascript
-function Memento(value) {
-    this.value = value;
-}
-
-var originator = {
-    store: function(val) {
-        return new Memento(val);
-    },
-    restore: function(memento) {
-        return memento.value;
-    }
-};
-
-function Caretaker() {
-    this.values = [];
-}
-
-Caretaker.prototype.addMemento = function(memento) {
-    this.values.push(memento);
-};
-
-Caretaker.prototype.getMemento = function(index) {
-    return this.values[index];
-};
-
-module.exports = [originator, Caretaker];
-
-```
 ##### memento_es6.js
 ```Javascript
 class Memento {
-    constructor(value) {
-        this.value = value;
+    constructor(event, goodEvent) {
+      this.event = event;
+      this.allGood = goodEvent;
     }
 }
 
-const originator = {
-    store: function(val) {
-        return new Memento(val);
-    },
-    restore: function(memento) {
-        return memento.value;
-    }
-};
-
-class Caretaker {
+class TimeMachine {
     constructor() {
-        this.values = [];
+        this.worldStates = [];
+        this.currentEvent = -1;
     }
 
-    addMemento(memento) {
-        this.values.push(memento);
+    addEvent(memento) {
+        this.currentEvent++;
+        if (this.currentEvent > this.worldStates.length - 1)
+          this.worldStates.push(memento);
+        else
+          this.worldStates[this.currentEvent] = memento;
     }
 
-    getMemento(index) {
-        return this.values[index];
+    allGood() {
+      if (this.currentEvent < 0) return false;
+      return this.worldStates[this.currentEvent].allGood;
+    }
+
+    revertRecentEvent() {
+        if (this.currentEvent < 0) return;
+        this.worldStates.pop();
+        this.currentEvent--;
+    }
+
+    restartHistory(from) {
+      if (this.currentEvent < 0)
+        this.currentEvent = -1;
+      else
+        this.currentEvent = from;
+    }
+
+    getRecentEvent() {
+      if (this.currentEvent < 0) return "Nothing";
+      return this.worldStates[this.currentEvent].event;
+    }
+
+    getEventInTime(epoch) {
+        try {
+          return this.worldStates[epoch].event;
+        } catch (e) {
+          return "TimeEvent out of bounds";
+        }
+
     }
 }
 
-
-
-export { originator, Caretaker };
+export { TimeMachine, Memento };
 
 ```
 
 ### Observer
-##### observer.js
-```Javascript
-function Product() {
-    this.price = 0;
-    this.actions = [];
-}
-
-Product.prototype.setBasePrice = function(val) {
-    this.price = val;
-    this.notifyAll();
-};
-
-Product.prototype.register = function(observer) {
-    this.actions.push(observer);
-};
-
-Product.prototype.unregister = function(observer) {
-    this.actions.remove.filter(function(el) {
-        return el !==  observer;
-    });
-};
-
-Product.prototype.notifyAll = function() {
-    return this.actions.forEach(function(el) {
-        el.update(this);
-    }.bind(this));
-};
-
-var fees = {
-    update: function(product) {
-        product.price = product.price * 1.2;
-    }
-};
-
-var proft = {
-    update: function(product) {
-        product.price = product.price * 2;
-    }
-};
-
-module.exports = [Product, fees, proft];
-
-```
 ##### observer_es6.js
 ```Javascript
-class Product {
+class Twitter {
     constructor() {
-        this.price = 0;
-        this.actions = [];
-    }
-
-    setBasePrice(val) {
-        this.price = val;
-        this.notifyAll();
+        this.followers = [];
     }
 
     register(observer) {
-        this.actions.push(observer);
+        this.followers.push(observer);
     }
 
     unregister(observer) {
-        this.actions.remove.filter(function(el) {
+        this.followers = this.followers.filter(function(el) {
             return el !== observer;
         });
     }
 
-    notifyAll() {
-        return this.actions.forEach(function(el) {
-            el.update(this);
+    tweet(message) {
+        return this.followers.forEach(function(el) {
+            el.readTweet(message);
         }.bind(this));
     }
 }
 
-class fees {
-    update(product) {
-        product.price = product.price * 1.2;
+class Follower {
+    constructor() {
+      this.readMessages = [];
+    }
+    readTweet(tweet) {
+      this.readMessages.push(tweet);
+    }
+    getReadMessages() {
+      return this.readMessages;
     }
 }
 
-class proft {
-    update(product) {
-        product.price = product.price * 2;
+class TwitStar {
+    constructor(twitter) {
+      this.twitter = twitter;
+    }
+    publishTweet(message) {
+      this.twitter.tweet(message);
     }
 }
 
-export { Product, fees, proft };
+export { TwitStar, Follower, Twitter };
 
 ```
 
 ### State
-##### state.js
-```Javascript
-function Order() {
-    this.state = new WaitingForPayment();
-
-    this.nextState = function() {
-        this.state = this.state.next();
-    };
-}
-
-
-function WaitingForPayment() {
-    this.name = 'waitingForPayment';
-    this.next = function() {
-        return new Shipping();
-    };
-}
-
-function Shipping() {
-    this.name = 'shipping';
-    this.next = function() {
-        return new Delivered();
-    };
-}
-
-function Delivered() {
-    this.name = 'delivered';
-    this.next = function() {
-        return this;
-    };
-}
-
-module.exports = Order;
-
-```
 ##### state_es6.js
 ```Javascript
-class OrderStatus {
-    constructor(name, nextStatus) {
-        this.name = name;
-        this.nextStatus = nextStatus;
-    }
+class ReadyState {
+  constructor(player) {
+    this.player = player;
+  }
 
-    next() {
-        return new this.nextStatus();
-    }
+  clickPlay() {
+    this.player.changeState(new PlayingState(this.player));
+  }
+
+  clickPause() {
+
+  }
+
+  clickStop() {
+
+  }
+
+  clickClose() {
+    this.player.changeState(new CloseState(this.player));
+  }
+
+  renderScreen() {
+    return "Hello";
+  }
+
 }
 
-class WaitingForPayment extends OrderStatus {
-    constructor() {
-        super('waitingForPayment', Shipping);
-    }
+class PlayingState extends ReadyState{
+  constructor(player) {
+    super(player);
+  }
+
+  clickPause() {
+    this.player.changeState(new PauseState(this.player));
+  }
+
+  clickStop() {
+    this.player.changeState(new ReadyState(this.player));
+  }
+
+  renderScreen() {
+    return "Playing";
+  }
+
 }
 
-class Shipping extends OrderStatus {
-    constructor() {
-        super('shipping', Delivered);
-    }
+class PauseState extends ReadyState{
+  constructor(player) {
+    super(player);
+  }
+
+  clickPlay() {
+    this.player.changeState(new PlayingState(this.player));
+  }
+
+  clickStop() {
+    this.player.changeState(new ReadyState(this.player));
+  }
+
+  renderScreen() {
+    return "...";
+  }
+
 }
 
+class CloseState extends ReadyState {
+  constructor(player) {
+    super(player);
+  }
 
-class Delivered extends OrderStatus {
-    constructor() {
-        super('delivered', Delivered);
-    }
+  clickPlay() {
+
+  }
+
+  clickPause() {
+
+  }
+
+  clickStop() {
+
+  }
+
+  clickClose() {
+
+  }
+
+  renderScreen() {
+    return "Goodbye"
+  }
+
 }
 
-class Order {
-    constructor() {
-        this.state = new WaitingForPayment();
-    }
+class Winamp {
+  constructor() {
+    this.state = new ReadyState(this);
+  }
 
-    nextState() {
-        this.state = this.state.next();
-    };
+  changeState(state) {
+    this.state = state;
+  }
+
+  clickPlay() {
+    this.state.clickPlay();
+  }
+
+  clickPause() {
+    this.state.clickPause();
+  }
+
+  clickStop() {
+    this.state.clickStop();
+  }
+
+  clickClose() {
+    this.state.clickClose();
+  }
+
+  renderScreen() {
+    return this.state.renderScreen();
+  }
+
 }
 
-export default Order;
+export { ReadyState, PlayingState, PauseState, CloseState, Winamp };
 
 ```
 
 ### Strategy
-##### strategy.js
-```Javascript
-function ShoppingCart(discount) {
-    this.discount = discount;
-    this.amount = 0;
-}
-
-ShoppingCart.prototype.setAmount = function(amount) {
-    this.amount = amount;
-};
-
-ShoppingCart.prototype.checkout = function() {
-   return this.discount(this.amount);
-};
-
-function guestStrategy(amount) {
-    return amount;
-}
-
-function regularStrategy(amount) {
-    return amount * 0.9;
-}
-
-function premiumStrategy(amount) {
-    return amount * 0.8;
-}
-
-module.exports = [ShoppingCart, guestStrategy, regularStrategy, premiumStrategy];
-
-```
 ##### strategy_es6.js
 ```Javascript
-class ShoppingCart {
-
-    constructor(discount) {
-        this.discount = discount;
-        this.amount = 0;
+class GoogleMaps {
+    constructor(strategy, destination) {
+        this.destination = destination;
+        this.strategy = strategy;
     }
 
-    checkout() {
-        return this.discount(this.amount);
+    getEstimateTime() {
+        return this.strategy(this.destination);
     }
 
-    setAmount(amount) {
-        this.amount = amount;
+    getDistance() {
+        this.destination.distance;
     }
 }
 
-function guestStrategy(amount) {
-    return amount;
+class Destination {
+    constructor(start, end) {
+      this.distance = end - start;
+    }
 }
 
-function regularStrategy(amount) {
-    return amount * 0.9;
+function avoidHighway_Tolls(destination) {
+    return (destination.distance * 3) / 60;
 }
 
-function premiumStrategy(amount) {
-    return amount * 0.8;
+function avoidTolls(destination) {
+    return (destination.distance * 1.5) / 60;
 }
 
-export { ShoppingCart, guestStrategy, regularStrategy, premiumStrategy };
+function avoidHighway(destination) {
+    return (destination.distance * 2.5) / 60;
+}
+
+function defaultRoute(destination) {
+    return destination.distance / 60;
+}
+
+export { Destination, GoogleMaps, avoidTolls, avoidHighway, avoidHighway_Tolls, defaultRoute };
 
 ```
 
 ### Template
-##### template.js
-```Javascript
-function Tax() {}
-
-Tax.prototype.calc = function(value) {
-   if (value >= 1000)
-       value = this.overThousand(value);
-
-    return this.complementaryFee(value);
-};
-
-Tax.prototype.complementaryFee = function(value) {
-    return value + 10;
-};
-
-
-function Tax1() {}
-Tax1.prototype = Object.create(Tax.prototype);
-
-Tax1.prototype.overThousand = function(value) {
-    return value * 1.1;
-};
-
-
-function Tax2() {}
-Tax2.prototype = Object.create(Tax.prototype);
-
-Tax2.prototype.overThousand = function(value) {
-    return value * 1.2;
-};
-
-module.exports = [Tax1, Tax2];
-
-```
 ##### template_es6.js
 ```Javascript
-class Tax {
-    calc(value) {
-        if (value >= 1000)
-            value = this.overThousand(value);
+class Dinner {
+  constructor(price, clients) {
+    this.price = price;
+    this.clients = clients;
+  }
 
-        return this.complementaryFee(value);
-    }
+  calculatePrice() {
+    return this.price;
+  }
 
-    complementaryFee(value) {
-        return value + 10;
-    }
-
+  getClients() {
+    return this.clients.length;
+  }
 }
 
-class Tax1 extends Tax {
-    constructor() {
-        super();
-    }
-    overThousand(value) {
-        return value * 1.1;
-    }
+class EuropeDinner extends Dinner {
+  constructor(price, clients) {
+    super(price, clients);
+    this.tax = this.price * 0.24;
+    this.tip = this.price > 50 ? this.price * 0.2 : this.price * 0.15;
+  }
+
+  calculatePrice() {
+    return this.price + this.tax + this.tip;
+  }
 }
 
-class Tax2 extends Tax {
-    constructor() {
-        super();
-    }
-    overThousand(value) {
-        return value * 1.2;
-    }
+class USADinner extends Dinner {
+  constructor(price, clients) {
+    super(price, clients);
+    this.tip = clients >= 10 ? this.price * 0.2 : 0;
+  }
+
+  calculatePrice() {
+    return this.price + this.tip;
+  }
 }
 
-export { Tax1, Tax2 };
+class MexicanDinner extends Dinner {
+  constructor(price, clients) {
+    super(price, clients);
+    this.tax = this.price * 0.16;
+  }
+
+  calculatePrice() {
+    return this.price + this.tax;
+  }
+}
+
+
+export { EuropeDinner, USADinner, MexicanDinner, Dinner };
 
 ```
 
 ### Visitor
-##### visitor.js
-```Javascript
-function bonusVisitor(employee) {
-    if (employee instanceof Manager)
-        employee.bonus = employee.salary * 2;
-    if (employee instanceof Developer)
-        employee.bonus = employee.salary;
-}
-
-function Employee() {
-    this.bonus = 0;
-}
-
-Employee.prototype.accept = function(visitor) {
-    visitor(this);
-};
-
-function Manager(salary) {
-    this.salary = salary;
-}
-
-Manager.prototype = Object.create(Employee.prototype);
-
-function Developer(salary) {
-    this.salary = salary;
-}
-
-Developer.prototype = Object.create(Employee.prototype);
-
-
-module.exports = [Developer, Manager, bonusVisitor];
-
-```
 ##### visitor_es6.js
 ```Javascript
-function bonusVisitor(employee) {
-    if (employee instanceof Manager)
-        employee.bonus = employee.salary * 2;
-    if (employee instanceof Developer)
-        employee.bonus = employee.salary;
+//Get shape Area bonusVisitor
+
+class BadAreaVisitor {
+  constructor() {
+
+  }
+
+  getCircleArea(circle) {
+    if (!(circle instanceof Circle))
+      throw "Not a Circle";
+    return Math.pow(circle.getRadius(), 2) * 3.1416;
+  }
+
+  getSquareArea(square) {
+    if (!(square instanceof Square))
+      throw "Not a Circle";
+    return Math.pow(square.getWidth(), 2);
+  }
+
+  getRectArea(rect) {
+    if (!(rect instanceof Rectangle))
+      throw "Not a Circle";
+    return rect.getHeight() * rect.getWidth();
+  }
+
+  getTriangleArea(triangle) {
+    if (!(triangle instanceof Triangle))
+      throw "Not a Circle";
+    return (triangle.getBase() * triangle.getHeight()) / 2;
+  }
 }
 
-class Employee {
-    constructor(salary) {
-        this.bonus = 0;
-        this.salary = salary;
-    }
+class AreaVisitor {
+  constructor() {
 
-    accept(visitor) {
-        visitor(this);
-    }
+  }
+
+  getCircleArea(circle) {
+    return Math.pow(circle.getRadius(), 2) * 3.1416;
+  }
+
+  getSquareArea(square) {
+    return Math.pow(square.getWidth(), 2);
+  }
+
+  getRectArea(rect) {
+    return rect.getHeight() * rect.getWidth();
+  }
+
+  getTriangleArea(triangle) {
+    return (triangle.getBase() * triangle.getHeight()) / 2;
+  }
+
 }
 
-class Manager extends Employee {
-    constructor(salary) {
-        super(salary);
+class Landscape {
+  constructor() {
+    this.shapes = [];
+  }
+
+  generateLandscape() {
+    for (let i = 0; i < 2; i++) {
+      this.shapes.push(new Circle(10))
     }
+    for (let i = 2; i < 5; i++) {
+      this.shapes.push(new Square(2))
+    }
+    for (let i = 5; i < 8; i++) {
+      this.shapes.push(new Rect(2, 4))
+    }
+    for (let i = 8; i < 10; i++) {
+      this.shapes.push(new Triangle(5, 3))
+    }
+  }
+
+  getLandscapeArea(areaVisitor) {
+    let area = 0;
+    this.shapes.forEach(e => {
+        area += e.getArea(areaVisitor);
+    });
+    return area;
+  }
+
+  getLandscapeShapes() {
+    return this.shapes;
+  }
 }
 
-class Developer extends Employee {
-    constructor(salary) {
-        super(salary);
-    }
+
+class Circle {
+  constructor(radius) {
+    this.radius = radius;
+  }
+  getArea(visitor) {
+    return visitor.getCircleArea(this);
+  }
+  getRadius() {
+    return this.radius;
+  }
 }
 
-export { Developer, Manager, bonusVisitor };
+class Square{
+  constructor(width) {
+    this.width = width;
+  }
+  getArea(visitor) {
+    return visitor.getSquareArea(this);
+  }
+  getWidth() {
+    return this.width;
+  }
+}
+
+class Rect{
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
+  }
+  getArea(visitor) {
+    return visitor.getRectArea(this);
+  }
+  getWidth() {
+    return this.width;
+  }
+  getHeight() {
+    return this.height;
+  }
+}
+
+class Triangle{
+  constructor(base, height) {
+    this.base = base;
+    this.height = height;
+  }
+  getArea(visitor) {
+    return visitor.getTriangleArea(this);
+  }
+  getBase() {
+    return this.base;
+  }
+  getHeight() {
+    return this.height;
+  }
+}
+
+export { AreaVisitor, Landscape, Circle, Square, Rect, Triangle };
 
 ```
 
@@ -909,10 +780,6 @@ export { Developer, Manager, bonusVisitor };
 
 class GuiFactory {
   constructor() {
-  }
-
-  typeOf() {
-    return "IGuiFactory";
   }
 
   renderBtn() {
@@ -928,31 +795,15 @@ class GuiFactory {
   }
 }
 
-class WinFactory extends GuiFactory {
-  constructor() {
-    super();
-    this.Btn = new WinBtn();
-    this.Title = new WinTitle();
-  }
-}
-
-class MacFactory extends GuiFactory {
-  constructor() {
-    super();
-    this.Btn = new MacBtn();
-    this.Title = new MacTitle();
-  }
-}
-
 class IBtn {
     render() {
-        throw err("Not Implemented");
+        throw "Not Implemented";
     }
 }
 
 class ITitle {
     render() {
-        throw err("Not Implemented");
+        throw "Not Implemented";
     }
 }
 
@@ -962,24 +813,25 @@ class WinBtn extends IBtn {
   }
 }
 
-class WinTitle extends ITitle {
-  render() {
-    return "<win>Title</win>"
-  }
-}
-
 class MacBtn extends IBtn {
   render() {
     return "<mac>Button</mac>"
   }
 }
 
-class MacTitle extends ITitle {
-  render() {
-    return "<mac>Title</mac>"
+class WinFactory extends GuiFactory {
+  constructor() {
+    super();
+    this.Btn = new WinBtn();
   }
 }
 
+class MacFactory extends GuiFactory {
+  constructor() {
+    super();
+    this.Btn = new MacBtn();
+  }
+}
 
 export { GuiFactory, WinFactory, MacFactory };
 
@@ -1014,61 +866,62 @@ class IBuilder {
 
 }
 
-class RequestBuilder extends IBuilder{
+class RequestBuilder extends IBuilder {
     constructor() {
-        super();
-        this.request = new Request();
+      super();
+      this.Request = new Request();
     }
 
     forUrl(url) {
-        this.request.url = url;
-        return this;
+      this.Request.url = url;
+      return this;
     }
 
     useMethod(method) {
-        this.request.method = method;
-        return this;
+      this.Request.method = method;
+      return this;
     }
 
     payload(payload) {
-        this.request.payload = payload;
-        return this;
+      this.Request.payload = payload;
+      return this;
     }
 
     build() {
-        return this.request;
+      return this.Request;
     }
 
 }
 
-class DocBuilder extends IBuilder{
+class DocBuilder extends IBuilder {
     constructor() {
-        super();
-        this.urlDoc = "";
-        this.methodDoc = "";
-        this.payloadDoc = "";
+      super();
+      this.docUrl = "";
+      this.methodUrl = "";
+      this.payloadUrl = "";
     }
 
     forUrl(url) {
-        this.urlDoc = url;
-        return this;
+      this.docUrl = url;
+      return this;
     }
 
     useMethod(method) {
-        this.methodDoc = method;
-        return this;
+      this.methodUrl = method;
+      return this;
     }
 
     payload(payload) {
-        this.payloadDoc = payload;
-        return this;
+      this.payloadUrl= payload;
+      return this;
     }
 
     build() {
-        return `<url>${this.urlDoc}</url><method>${this.methodDoc}</method><payload>${this.payloadDoc}</payload>`;
+      return `<url>${this.docUrl}</url><method>${this.methodUrl}</method><payload>${this.payloadUrl}</payload>`;
     }
 
 }
+
 
 export { RequestBuilder, DocBuilder, IBuilder, Request };
 
@@ -1083,20 +936,31 @@ class Employee {
   }
 }
 
-
-class EmployeeFactory {
+class IFactory {
   constructor() {
+  }
+
+  findOrCreate(id) {
+    throw "Not implemented"
+  }
+
+}
+
+
+class EmployeeFactory extends IFactory{
+  constructor() {
+    super();
     this.employees = {};
   }
 
-  findOrCreateEmployee(id) {
+  findOrCreate(id) {
     if (this.employees[id] === undefined)
-        this.employees[id] = new Employee(id);
+      this.employees[id] = new Employee(id);
     return this.employees[id];
   }
 
   getNumberOfEmployees() {
-    return Object.keys(this.employees).length;
+      return Object.keys(this.employees).length;
   }
 
 }
@@ -1201,20 +1065,16 @@ class SquareObject {
   }
 }
 
-class RoundSquareAdapter extends RoundObject{
-  constructor(square) {
-    super();
-    if (!(square instanceof SquareObject))
-        throw "Not a square object";
-    this.square = square;
-  }
+class RoundSquareAdapter extends RoundObject {
+    constructor(square) {
+      super();
+      this.square = square;
+    }
 
-  getRadius() {
-    return Math.sqrt(2 * Math.pow(this.square.getWidth(), 2)) / 2;
-  }
-
+    getRadius() {
+      return Math.sqrt(2 * Math.pow(this.square.getWidth(), 2)) / 2;
+    }
 }
-
 
 export { RoundSquareAdapter, SquareObject, RoundObject, RoundHole };
 
@@ -1237,7 +1097,7 @@ class DataSource {
   }
 
   readData() {
-    console.log('Raw Data', this.data);
+    //console.log('Raw Data', this.data);
     return this.data;
   }
 
@@ -1254,8 +1114,7 @@ class DataSourceDecorator extends DataSource {
   }
 
   readData() {
-    const data = this.dataSource.readData();
-    return data;
+    return this.dataSource.readData();
   }
 }
 
@@ -1265,14 +1124,13 @@ class EncryptData extends DataSourceDecorator {
   }
 
   setData(data) {
-    const encryptedData = `XXX===${data}===XXX`;
+    const encryptedData = "XXX===" + data + "===XXX";
     super.setData(encryptedData);
   }
 
   readData() {
     let encryptedData = super.readData();
-    const decryptedData = replaceAll(replaceAll(encryptedData, 'XXX===',''),'===XXX','');
-    return decryptedData;
+    return replaceAll(replaceAll(encryptedData, "XXX===" , ""), "===XXX", "");
   }
 }
 
@@ -1282,14 +1140,13 @@ class CompressData extends DataSourceDecorator {
   }
 
   setData(data) {
-    const compressData = replaceAll(data, 'XXX', 'x');
-    super.setData(compressData);
+    const compressdata = replaceAll(data, "XXX" , "x");
+    super.setData(compressdata);
   }
 
   readData() {
-    let compressData = super.readData();
-    const decompressedData = replaceAll(compressData, 'x','XXX');
-    return decompressedData;
+    let compressdata = super.readData();
+    return replaceAll(compressdata, "x" , "XXX")
   }
 }
 
@@ -1427,15 +1284,19 @@ class TreeType {
       this.color = color;
       this.texture = texture;
     }
+
+    getSize() {
+      return roughSizeOfObject(this);
+    }
 }
 
 class ShallowTree {
-    constructor(type, height){
-      this.type = type;
+    constructor(treeType, height){
+      this.treeType = treeType.type;
       this.height = height;
     }
     render(treeType) {
-      console.log(`${this.height} - ${treeType.color} - ${treeType.texture}`);
+      return `${this.height} - ${treeType.color} - ${treeType.texture}`;
     }
     getSize() {
       return roughSizeOfObject(this);
@@ -1448,7 +1309,7 @@ class DeepTree {
       this.height = height;
     }
     render() {
-      console.log(`${this.height} - ${this.treeType.color} - ${this.treeType.texture}`);
+      return `${this.height} - ${this.treeType.color} - ${this.treeType.texture}`;
     }
     getSize() {
       return roughSizeOfObject(this);
@@ -1457,23 +1318,27 @@ class DeepTree {
 
 class ShallowforestFactory {
     constructor(){
-        this.treeTypes = {};
-        this.trees = [];
+      this.treeTypes = {};
+      this.trees = [];
     }
     addTrees(treeType, count) {
-        if (this.treeTypes[treeType.type] === undefined)
-          this.treeTypes[treeType.type] = treeType;
-        for (let i = 0; i <= count; i++)
-          this.trees.push(new ShallowTree(treeType.type, i * 10));
+      if (this.treeTypes[treeType.type] === undefined)
+        this.treeTypes[treeType.type] = treeType;
+      for (let i = 0; i <= count; i++)
+        this.trees.push(new ShallowTree(treeType, i * 10));
     }
     renderForest() {
+      let str = "";
       for (let i = 0; i < this.trees.length; i++)
-        this.trees[i].render(this.treeTypes[this.trees[i].type]);
+        str += this.trees[i].render(this.treeTypes[this.trees[i].treeType]) + '\n';
+      return str;
     }
     getSize() {
       let size = 0;
       for (let i = 0; i < this.trees.length; i++)
         size += this.trees[i].getSize();
+      for (let i = 0; i < Object.keys(this.treeTypes).length; i++)
+        size += this.treeTypes[Object.keys(this.treeTypes)[i]].getSize();
       return size;
     }
 };
@@ -1487,8 +1352,10 @@ class DeepforestFactory {
         this.trees.push(new DeepTree(treeType, i * 10));
     }
     renderForest() {
+      let str = "";
       for (let i = 0; i < this.trees.length; i++)
-        this.trees[i].render();
+        str += this.trees[i].render() + '\n';
+      return str;
     }
     getSize() {
       let size = 0;
@@ -1532,7 +1399,6 @@ function roughSizeOfObject( object ) {
     return bytes;
 }
 
-
 export { TreeType, ShallowTree, DeepTree, ShallowforestFactory, DeepforestFactory };
 
 ```
@@ -1546,22 +1412,24 @@ class Car {
     };
 }
 
-class CarProxy {
+class CarValet {
     constructor(driver) {
-        this.driver = driver;
+      this.driver = driver;
     }
     drive() {
-        return (this.driver.age < 18) ? "too young to drive" : new Car().drive();
+        if (this.driver.avgAlcohol < 0.8)
+          return new Car().drive();
+        return "you're drunk, get Uber";
     };
 }
 
 class Driver {
-    constructor(age) {
-        this.age = age;
+    constructor(beers) {
+      this.avgAlcohol = 0.08 * beers;
     }
 }
 
-export { Car, CarProxy, Driver };
+export { Car, CarValet, Driver };
 
 ```
 
