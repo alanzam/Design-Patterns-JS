@@ -1,33 +1,58 @@
-class Iterator {
-    constructor(el) {
+class FacebookContact {
+  constructor(isFriend) {
+    this.isFriend = isFriend ? true : false;
+  }
+}
+
+class FacebookFriend extends FacebookContact {
+  constructor() {
+    super(true);
+  }
+}
+
+class Facebook {
+  constructor() {
+    this.contacts = [];
+  }
+
+  addContact(contact) {
+    this.contacts.push(contact);
+  }
+}
+
+class FriendSearch {
+    constructor(contacts) {
         this.index = 0;
-        this.elements = el;
+        this.contacts = contacts;
     }
 
     next() {
-        return this.elements[this.index++];
+        while (this.hasNext()) {
+          const nextContact = this.contacts[this.index++];
+          if (nextContact.isFriend)
+            return nextContact;
+        }
+        return undefined;
     }
 
     hasNext() {
-        return this.index < this.elements.length;
+        return this.index < this.contacts.length;
     }
 }
 
-
-class FastIterator {
-    constructor(el) {
+class ContactSearch {
+    constructor(contacts) {
         this.index = 0;
-        this.elements = el;
+        this.contacts = contacts;
     }
 
     next() {
-        this.index = this.index + 2;
-        return this.elements[this.index];
+        return this.contacts[this.index++];
     }
 
     hasNext() {
-        return this.index < this.elements.length;
+        return this.index < this.contacts.length;
     }
 }
 
-export default Iterator;
+export {FacebookFriend, FacebookContact, Facebook, FriendSearch, ContactSearch};

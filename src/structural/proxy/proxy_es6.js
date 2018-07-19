@@ -4,21 +4,21 @@ class Car {
     };
 }
 
-class CarProxy {
+class CarValet {
     constructor(driver) {
       this.driver = driver;
     }
     drive() {
-        if (this.driver.age >= 16)
+        if (this.driver.avgAlcohol < 0.8)
           return new Car().drive();
-        return "too young to drive";
+        return "you're drunk, get Uber";
     };
 }
 
 class Driver {
-    constructor(age) {
-        this.age = age;
+    constructor(beers) {
+      this.avgAlcohol = 0.08 * beers;
     }
 }
 
-export { Car, CarProxy, Driver };
+export { Car, CarValet, Driver };

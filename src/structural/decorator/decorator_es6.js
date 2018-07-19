@@ -12,7 +12,7 @@ class DataSource {
   }
 
   readData() {
-    console.log('Raw Data', this.data);
+    //console.log('Raw Data', this.data);
     return this.data;
   }
 

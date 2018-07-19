@@ -1,6 +1,5 @@
 class Twitter {
     constructor() {
-        this.tweet = "";
         this.followers = [];
     }
 
@@ -9,14 +8,14 @@ class Twitter {
     }
 
     unregister(observer) {
-        this.followers.remove.filter(function(el) {
+        this.followers = this.followers.filter(function(el) {
             return el !== observer;
         });
     }
 
     tweet(message) {
         return this.followers.forEach(function(el) {
-            el.update(message);
+            el.readTweet(message);
         }.bind(this));
     }
 }

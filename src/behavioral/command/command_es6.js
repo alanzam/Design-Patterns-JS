@@ -1,41 +1,75 @@
-class Cockpit {
-    constructor(command) {
-        this.command = command;
-    }
-    execute() {
-        this.command.execute();
-    }
+class Player {
+  constructor() {
+    this.beats = [];
+  }
+
+  playSong() {
+    let song = "";
+    this.beats.forEach(function(beat) {
+        song += beat.loop();
+    });
+    return song;
+  }
+
+  getDuration() {
+    let duration = 0;
+    this.beats.forEach(function(beat) {
+        duration += beat.getTime();
+    });
+    return duration;
+  }
+
+  addCube(cube) {
+    this.beats.push(cube);
+  }
+
 }
 
-class Turbine {
-    constructor() {
-        this.state = false;
-    }
-    on() {
-        this.state = true;
-    }
-    off() {
-        this.state = false;
-    }
+class BeatCube {
+  constructor(beat, time) {
+    this.beat = beat;
+    this.time = time !== undefined ? time : 1;
+  }
+
+  demoPlay() {
+    return this.beat.play();
+  }
+
+  loop() {
+    let loop = "";
+    for (let i = 0; i < this.time; i++)
+      loop += this.beat.play();
+    return loop;
+  }
+
+  getTime() {
+    return this.time;
+  }
 }
 
-class OnCommand {
-    constructor(turbine) {
-        this.turbine = turbine;
-    }
-    execute() {
-        this.turbine.on();
-    }
+class HipHopBeat {
+  play() {
+    return "O------X--O----X";
+  }
 }
 
-class OffCommand {
-    constructor(turbine) {
-        this.turbine = turbine;
-    }
-    execute() {
-        this.turbine.off();
-    }
+class RockBeat {
+  play() {
+    return "O-X-O-X-O-X-O-X-";
+  }
 }
 
-export { Cockpit, Turbine, OnCommand, OffCommand };
+class DiscoBeat {
+  play() {
+    return "O - X - O - X - ";
+  }
+}
 
+class ReggaeBeat {
+  play() {
+    return "O - - - X - - - O";
+  }
+}
+
+
+export { Player, BeatCube, HipHopBeat, DiscoBeat, RockBeat, ReggaeBeat };

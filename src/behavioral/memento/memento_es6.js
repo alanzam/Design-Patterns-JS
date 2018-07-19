@@ -1,32 +1,55 @@
 class Memento {
-    constructor(value) {
-        this.value = value;
+    constructor(event, goodEvent) {
+      this.event = event;
+      this.allGood = goodEvent;
     }
 }
 
-const originator = {
-    store: function(val) {
-        return new Memento(val);
-    },
-    restore: function(memento) {
-        return memento.value;
-    }
-};
-
-class Caretaker {
+class TimeMachine {
     constructor() {
-        this.values = [];
+        this.worldStates = [];
+        this.currentEvent = -1;
     }
 
-    addMemento(memento) {
-        this.values.push(memento);
+    addEvent(memento) {
+        this.currentEvent++;
+        if (this.currentEvent > this.worldStates.length - 1)
+          this.worldStates.push(memento);
+        else
+          this.worldStates[this.currentEvent] = memento;
     }
 
-    getMemento(index) {
-        return this.values[index];
+    allGood() {
+      if (this.currentEvent < 0) return false;
+      return this.worldStates[this.currentEvent].allGood;
+    }
+
+    revertRecentEvent() {
+        if (this.currentEvent < 0) return;
+        this.worldStates.pop();
+        this.currentEvent--;
+    }
+
+    restartHistory(from) {
+      if (this.currentEvent < 0)
+        this.currentEvent = -1;
+      else
+        this.currentEvent = from;
+    }
+
+    getRecentEvent() {
+      if (this.currentEvent < 0) return "Nothing";
+      return this.worldStates[this.currentEvent].event;
+    }
+
+    getEventInTime(epoch) {
+        try {
+          return this.worldStates[epoch].event;
+        } catch (e) {
+          return "TimeEvent out of bounds";
+        }
+
     }
 }
 
-
-
-export { originator, Caretaker };
+export { TimeMachine, Memento };

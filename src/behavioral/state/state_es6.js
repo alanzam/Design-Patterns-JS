@@ -72,6 +72,18 @@ class CloseState extends ReadyState {
 
   }
 
+  clickPause() {
+
+  }
+
+  clickStop() {
+
+  }
+
+  clickClose() {
+
+  }
+
   renderScreen() {
     return "Goodbye"
   }
@@ -79,7 +91,7 @@ class CloseState extends ReadyState {
 }
 
 class Winamp {
-  constructor(state) {
+  constructor() {
     this.state = new ReadyState(this);
   }
 
@@ -101,6 +113,10 @@ class Winamp {
 
   clickClose() {
     this.state.clickClose();
+  }
+
+  renderScreen() {
+    return this.state.renderScreen();
   }
 
 }

@@ -28,7 +28,7 @@ class EuropeDinner extends Dinner {
 class USADinner extends Dinner {
   constructor(price, clients) {
     super(price, clients);
-    this.tip = this.clients.length > 10 ? this.price * 0.25 : this.price * 0.12;
+    this.tip = clients >= 10 ? this.price * 0.2 : 0;
   }
 
   calculatePrice() {
@@ -46,7 +46,6 @@ class MexicanDinner extends Dinner {
     return this.price + this.tax;
   }
 }
-
 
 
 export { EuropeDinner, USADinner, MexicanDinner, Dinner };

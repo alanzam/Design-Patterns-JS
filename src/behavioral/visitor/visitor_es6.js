@@ -58,10 +58,31 @@ class Landscape {
     this.shapes = [];
   }
 
-  generateRandomLandscape() {
-    for (let i = 0; i < 25; i++) {
-      this.shapes.push()
+  generateLandscape() {
+    for (let i = 0; i < 2; i++) {
+      this.shapes.push(new Circle(10))
     }
+    for (let i = 2; i < 5; i++) {
+      this.shapes.push(new Square(2))
+    }
+    for (let i = 5; i < 8; i++) {
+      this.shapes.push(new Rect(2, 4))
+    }
+    for (let i = 8; i < 10; i++) {
+      this.shapes.push(new Triangle(5, 3))
+    }
+  }
+
+  getLandscapeArea(areaVisitor) {
+    let area = 0;
+    this.shapes.forEach(e => {
+        area += e.getArea(areaVisitor);
+    });
+    return area;
+  }
+
+  getLandscapeShapes() {
+    return this.shapes;
   }
 }
 

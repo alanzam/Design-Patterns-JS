@@ -1,29 +1,38 @@
-class ShoppingCart {
-
-    constructor(discount) {
-        this.discount = discount;
-        this.amount = 0;
+class GoogleMaps {
+    constructor(strategy, destination) {
+        this.destination = destination;
+        this.strategy = strategy;
     }
 
-    checkout() {
-        return this.discount(this.amount);
+    getEstimateTime() {
+        return this.strategy(this.destination);
     }
 
-    setAmount(amount) {
-        this.amount = amount;
+    getDistance() {
+        this.destination.distance;
     }
 }
 
-function guestStrategy(amount) {
-    return amount;
+class Destination {
+    constructor(start, end) {
+      this.distance = end - start;
+    }
 }
 
-function regularStrategy(amount) {
-    return amount * 0.9;
+function avoidHighway_Tolls(destination) {
+    return (destination.distance * 3) / 60;
 }
 
-function premiumStrategy(amount) {
-    return amount * 0.8;
+function avoidTolls(destination) {
+    return (destination.distance * 1.5) / 60;
 }
 
-export { ShoppingCart, guestStrategy, regularStrategy, premiumStrategy };
+function avoidHighway(destination) {
+    return (destination.distance * 2.5) / 60;
+}
+
+function defaultRoute(destination) {
+    return destination.distance / 60;
+}
+
+export { Destination, GoogleMaps, avoidTolls, avoidHighway, avoidHighway_Tolls, defaultRoute };
