@@ -86,15 +86,9 @@ class Landscape {
   }
 }
 
-class IShape {
-  getArea(visitor) {
-    throw "Not Implemented";
-  }
-}
 
-class Circle extends IShape{
+class Circle {
   constructor(radius) {
-    super();
     this.radius = radius;
   }
   getArea(visitor) {
@@ -105,9 +99,8 @@ class Circle extends IShape{
   }
 }
 
-class Square extends IShape{
+class Square{
   constructor(width) {
-    super();
     this.width = width;
   }
   getArea(visitor) {
@@ -118,9 +111,8 @@ class Square extends IShape{
   }
 }
 
-class Rect extends IShape{
+class Rect{
   constructor(width, height) {
-    super();
     this.width = width;
     this.height = height;
   }
@@ -135,9 +127,8 @@ class Rect extends IShape{
   }
 }
 
-class Triangle extends IShape{
+class Triangle{
   constructor(base, height) {
-    super();
     this.base = base;
     this.height = height;
   }
