@@ -1,41 +1,45 @@
-class Product {
+class Twitter {
     constructor() {
-        this.price = 0;
-        this.actions = [];
-    }
-
-    setBasePrice(val) {
-        this.price = val;
-        this.notifyAll();
+        this.tweet = "";
+        this.followers = [];
     }
 
     register(observer) {
-        this.actions.push(observer);
+        this.followers.push(observer);
     }
 
     unregister(observer) {
-        this.actions.remove.filter(function(el) {
+        this.followers.remove.filter(function(el) {
             return el !== observer;
         });
     }
 
-    notifyAll() {
-        return this.actions.forEach(function(el) {
-            el.update(this);
+    tweet(message) {
+        return this.followers.forEach(function(el) {
+            el.update(message);
         }.bind(this));
     }
 }
 
-class fees {
-    update(product) {
-        product.price = product.price * 1.2;
+class Follower {
+    constructor() {
+      this.readMessages = [];
+    }
+    readTweet(tweet) {
+      this.readMessages.push(tweet);
+    }
+    getReadMessages() {
+      return this.readMessages;
     }
 }
 
-class proft {
-    update(product) {
-        product.price = product.price * 2;
+class TwitStar {
+    constructor(twitter) {
+      this.twitter = twitter;
+    }
+    publishTweet(message) {
+      this.twitter.tweet(message);
     }
 }
 
-export { Product, fees, proft };
+export { TwitStar, Follower, Twitter };

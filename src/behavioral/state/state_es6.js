@@ -1,41 +1,108 @@
-class OrderStatus {
-    constructor(name, nextStatus) {
-        this.name = name;
-        this.nextStatus = nextStatus;
-    }
+class ReadyState {
+  constructor(player) {
+    this.player = player;
+  }
 
-    next() {
-        return new this.nextStatus();
-    }
+  clickPlay() {
+    this.player.changeState(new PlayingState(this.player));
+  }
+
+  clickPause() {
+
+  }
+
+  clickStop() {
+
+  }
+
+  clickClose() {
+    this.player.changeState(new CloseState(this.player));
+  }
+
+  renderScreen() {
+    return "Hello";
+  }
+
 }
 
-class WaitingForPayment extends OrderStatus {
-    constructor() {
-        super('waitingForPayment', Shipping);
-    }
+class PlayingState extends ReadyState{
+  constructor(player) {
+    super(player);
+  }
+
+  clickPause() {
+    this.player.changeState(new PauseState(this.player));
+  }
+
+  clickStop() {
+    this.player.changeState(new ReadyState(this.player));
+  }
+
+  renderScreen() {
+    return "Playing";
+  }
+
 }
 
-class Shipping extends OrderStatus {
-    constructor() {
-        super('shipping', Delivered);
-    }
+class PauseState extends ReadyState{
+  constructor(player) {
+    super(player);
+  }
+
+  clickPlay() {
+    this.player.changeState(new PlayingState(this.player));
+  }
+
+  clickStop() {
+    this.player.changeState(new ReadyState(this.player));
+  }
+
+  renderScreen() {
+    return "...";
+  }
+
 }
 
+class CloseState extends ReadyState {
+  constructor(player) {
+    super(player);
+  }
 
-class Delivered extends OrderStatus {
-    constructor() {
-        super('delivered', Delivered);
-    }
+  clickPlay() {
+
+  }
+
+  renderScreen() {
+    return "Goodbye"
+  }
+
 }
 
-class Order {
-    constructor() {
-        this.state = new WaitingForPayment();
-    }
+class Winamp {
+  constructor(state) {
+    this.state = new ReadyState(this);
+  }
 
-    nextState() {
-        this.state = this.state.next();
-    };
+  changeState(state) {
+    this.state = state;
+  }
+
+  clickPlay() {
+    this.state.clickPlay();
+  }
+
+  clickPause() {
+    this.state.clickPause();
+  }
+
+  clickStop() {
+    this.state.clickStop();
+  }
+
+  clickClose() {
+    this.state.clickClose();
+  }
+
 }
 
-export default Order;
+export { ReadyState, PlayingState, PauseState, CloseState, Winamp };
