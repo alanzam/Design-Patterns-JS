@@ -35,4 +35,6 @@ function defaultRoute(destination) {
     return destination.distance / 60;
 }
 
+
+
 export { Destination, GoogleMaps, avoidTolls, avoidHighway, avoidHighway_Tolls, defaultRoute };

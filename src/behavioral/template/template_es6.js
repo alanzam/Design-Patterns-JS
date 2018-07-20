@@ -9,7 +9,11 @@ class Dinner {
   }
 
   getClients() {
-    return this.clients.length;
+    return this.clients;
+  }
+
+  getPriceByClient() {
+    return this.calculatePrice() / this.clients;
   }
 }
 

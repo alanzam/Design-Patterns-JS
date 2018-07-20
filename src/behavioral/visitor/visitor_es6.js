@@ -76,7 +76,7 @@ class Landscape {
   getLandscapeArea(areaVisitor) {
     let area = 0;
     this.shapes.forEach(e => {
-        area += e.getArea(areaVisitor);
+        area += e.acceptVisitor(areaVisitor);
     });
     return area;
   }
@@ -91,7 +91,7 @@ class Circle {
   constructor(radius) {
     this.radius = radius;
   }
-  getArea(visitor) {
+  acceptVisitor(visitor) {
     return visitor.getCircleArea(this);
   }
   getRadius() {
@@ -103,7 +103,7 @@ class Square{
   constructor(width) {
     this.width = width;
   }
-  getArea(visitor) {
+  acceptVisitor(visitor) {
     return visitor.getSquareArea(this);
   }
   getWidth() {
@@ -116,7 +116,7 @@ class Rect{
     this.width = width;
     this.height = height;
   }
-  getArea(visitor) {
+  acceptVisitor(visitor) {
     return visitor.getRectArea(this);
   }
   getWidth() {
@@ -132,7 +132,7 @@ class Triangle{
     this.base = base;
     this.height = height;
   }
-  getArea(visitor) {
+  acceptVisitor(visitor) {
     return visitor.getTriangleArea(this);
   }
   getBase() {

@@ -2,6 +2,7 @@ const expect = require('chai').expect;
 import { Destination, GoogleMaps, avoidTolls, avoidHighway, avoidHighway_Tolls, defaultRoute } from '../src/behavioral/strategy/strategy_es6';
 
 
+
 describe('strategy tests', () => {
     it('GoogleMaps Route', () => {
         const sanPeter = new Destination(0, 60);
@@ -16,5 +17,8 @@ describe('strategy tests', () => {
 
         const googleMapsFastRoute = new GoogleMaps(defaultRoute, sanPeter);
         expect(googleMapsFastRoute.getEstimateTime()).to.equal(1); //Hrs
+
+        const googleMapsFastestRoute = new GoogleMaps((dest) => dest.distance / 120, sanPeter);
+        expect(googleMapsFastestRoute.getEstimateTime()).to.equal(0.5); //Hrs
     });
 });
