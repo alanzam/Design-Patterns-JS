@@ -1,6 +1,23 @@
+class Interface { //Interface
+  helloWorld() {
+    throw "Not Implemented";
+  }
+}
 
-class LabClass {
+class Singleton {
+    constructor() {
+        if (typeof Singleton.instance === 'object') {
+            return Singleton.instance;
+        }
+        Singleton.instance = this;
+        return this;
+    }
+
+}
+
+class Class extends Interface {
   constructor() {
+    super();
   }
 
   helloWorld() {
@@ -8,4 +25,4 @@ class LabClass {
   }
 }
 
-export default LabClass;
+export { Class, Interface, Singleton };
